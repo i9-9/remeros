@@ -12,7 +12,7 @@ export default function Ubicacion() {
       <div className="layout-margin">
         <div className="container-grid">
           {/* Header */}
-          <div className="col-12 mb-16">
+          <div className="col-12 mb-4">
             <div className="flex flex-col md:flex-row items-start gap-8 md:gap-16 justify-center ml-0 md:ml-28">
               <h2 className="font-gt-extended font-bold text-6xl md:text-5xl text-primary-dark mb-6 whitespace-nowrap">
                 UBICACIÓN
@@ -31,7 +31,7 @@ export default function Ubicacion() {
 
           {/* Left Panel - Green Background */}
           <div className="col-4">
-            <div className="bg-primary-sage text-white p-8 h-[600px]">
+            <div className="bg-primary-sage text-white p-8 h-full max-h-[500px]">
               <div className="space-y-12">
                 {/* Gastronomía */}
                 <div>
@@ -70,7 +70,7 @@ export default function Ubicacion() {
 
           {/* Right Panel - Map */}
           <div className="col-8">
-            <div className="relative h-[600px] rounded-lg overflow-hidden">
+            <div className="relative h-full max-h-[300px] rounded-lg overflow-hidden">
               {!imageError ? (
                 <Image
                   src="/images/mapa-ubicacion.jpg"
