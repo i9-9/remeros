@@ -15,14 +15,14 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="relative z-10 py-6 layout-margin">
+    <nav className="relative z-10 py-5 layout-margin">
       <div className="container-grid">
         <div className="col-4 flex items-center">
-          <Logo type="remeros" size="xl" className="text-white" />
+          <Logo type="remeros" size="lg" className="text-white" />
         </div>
         
         {/* Desktop Navigation */}
-        <div className="col-8 hidden lg:flex lg:gap-x-24 justify-end items-center">
+        <div className="col-8 hidden lg:flex lg:gap-x-24 justify-end items-start">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -38,7 +38,7 @@ export default function Navbar() {
         <div className="col-8 flex lg:hidden justify-end items-center">
           <button
             type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-primary-navy"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <span className="sr-only">Abrir menú principal</span>
