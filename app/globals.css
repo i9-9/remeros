@@ -56,6 +56,11 @@
   font-family: var(--font-gt-extended);
 }
 
+.font-gt-expanded-regular {
+  font-family: var(--font-gt-expanded-regular);
+  font-weight: 400;
+}
+
 .font-montreal-light {
   font-family: var(--font-pp-neue);
   font-weight: 300;

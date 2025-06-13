@@ -19,14 +19,18 @@ export default function Unidades() {
         <div className="container-grid">
           {/* Header */}
           <div className="col-12 mb-16">
-            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
-              <h2 className="font-gt-extended font-bold text-6xl md:text-7xl text-primary-dark mb-0 whitespace-nowrap">
-                UNIDADES
-              </h2>
-              <div className="w-20 h-1 md:w-1 md:h-20 bg-primary-dark mx-0 md:mx-6"></div>
-              <p className="font-montreal-medium text-xl text-primary-dark max-w-2xl mb-0">
-                Nuestras unidades están diseñadas para combinar la tranquilidad de la naturaleza con las ventajas de la vida en la ciudad.
-              </p>
+            <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left gap-4 md:gap-12 w-full">
+              <div>
+                <h2 className="font-gt-extended font-bold text-6xl md:text-7xl text-primary-dark mb-0 whitespace-nowrap">
+                  UNIDADES
+                </h2>
+              </div>
+              <div className="hidden md:block w-1 h-16 bg-primary-dark mx-8"></div>
+              <div className="max-w-2xl">
+                <p className="font-montreal-medium text-xl text-primary-dark mb-0">
+                  Nuestras unidades están diseñadas para combinar la tranquilidad de la naturaleza con las ventajas de la vida en la ciudad.
+                </p>
+              </div>
             </div>
           </div>
 

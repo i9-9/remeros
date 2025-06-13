@@ -4,7 +4,7 @@ export default function Entorno() {
   return (
     <section
       id="entorno"
-      className="relative w-full h-[50vh] min-h-[300px] flex items-end bg-no-repeat"
+      className="relative w-full h-[50vh] min-h-[300px] flex items-end bg-no-repeat bg-fixed"
       style={{
         backgroundImage: "url('/images/Remeros drone-45.jpg')",
         backgroundSize: "cover",
@@ -23,7 +23,7 @@ export default function Entorno() {
             </span>
           </h2>
           {/* Subtítulo a la derecha */}
-          <p className="text-white text-left font-montreal-medium text-xl md:text-2xl max-w-xl leading-[0.87]">
+          <p className="text-white text-left font-montreal-medium text-xl md:text-2xl max-w-xl lg:leading-[1]">
             Un lugar que combina lo mejor de lo<br />
             natural y lo urbano
           </p>
