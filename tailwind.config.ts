@@ -22,6 +22,7 @@ const config: Config = {
       },
       fontFamily: {
         'gt-extended': ['var(--font-gt-extended)', 'sans-serif'],
+        'gt-extended-thin': ['var(--font-gt-extended-thin)', 'sans-serif'],
         'gt-america': ['var(--font-gt-america)', 'sans-serif'], 
         'pp-neue': ['var(--font-pp-neue)', 'sans-serif'],
         'montreal-light': ['var(--font-pp-neue)', 'sans-serif'],

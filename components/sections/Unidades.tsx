@@ -19,13 +19,15 @@ export default function Unidades() {
         <div className="container-grid">
           {/* Header */}
           <div className="col-12 mb-16">
-            <h2 className="font-gt-extended font-bold text-6xl md:text-7xl text-primary-dark mb-6">
-              UNIDADES
-            </h2>
-            <div className="w-2 h-20 bg-primary-dark mb-8"></div>
-            <p className="font-montreal-medium text-xl text-primary-dark max-w-2xl">
-              Nuestras unidades están diseñadas para combinar la tranquilidad de la naturaleza con las ventajas de la vida en la ciudad.
-            </p>
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+              <h2 className="font-gt-extended font-bold text-6xl md:text-7xl text-primary-dark mb-0 whitespace-nowrap">
+                UNIDADES
+              </h2>
+              <div className="w-20 h-1 md:w-1 md:h-20 bg-primary-dark mx-0 md:mx-6"></div>
+              <p className="font-montreal-medium text-xl text-primary-dark max-w-2xl mb-0">
+                Nuestras unidades están diseñadas para combinar la tranquilidad de la naturaleza con las ventajas de la vida en la ciudad.
+              </p>
+            </div>
           </div>
 
           {/* Main Image */}

@@ -4,13 +4,13 @@ import Image from 'next/image';
 
 export default function Proyecto() {
   return (
-    <section id="proyecto" className="bg-[#7A8B9A] text-white py-20">
+    <section id="proyecto" className="bg-primary-navy text-white py-20">
       <div className="layout-margin">
         <div className="container-grid">
           <div className="col-12 text-center mb-16">
-            <h2 className="font-gt-extended font-bold text-5xl md:text-6xl lg:text-7xl mb-8">
+            <h2 className="font-gt-extended font-medium text-5xl md:text-6xl lg:text-9xl mb-8 md:leading-[1.2rem]">
               CONOCÉ EL<br />
-              <span className="text-primary-cream">PROYECTO</span>
+              PROYECTO
             </h2>
           </div>
           
@@ -65,7 +65,7 @@ export default function Proyecto() {
           {/* Amenities List */}
           <div className="col-12 text-center">
             <div className="inline-block">
-              <div className="font-montreal-light text-2xl md:text-3xl lg:text-4xl leading-relaxed">
+              <div className="font-gt-extended-thin text-2xl md:text-3xl lg:text-6xl leading-relaxed">
                 PILETA/ SUM/ PARRILLAS/ GYM/<br />
                 COWORK/ KIDS ROOM/ FOGONEROS/<br />
                 ESPACIO WELLNESS & SPA

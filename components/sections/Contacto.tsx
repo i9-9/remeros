@@ -29,15 +29,17 @@ export default function Contacto() {
       <div className="layout-margin">
         <div className="container-grid">
           {/* Header */}
-          <div className="col-12 text-center mb-16">
-            <h2 className="font-gt-extended font-bold text-6xl md:text-7xl text-white mb-6">
-              CONTACTO
-            </h2>
-            <div className="w-2 h-20 bg-white mx-auto mb-8"></div>
-            <p className="font-montreal-medium text-xl text-white max-w-2xl mx-auto">
-              Te invitamos a dejarnos tus datos para recibir más información sobre<br />
-              Palmera de los Remeros
-            </p>
+          <div className="col-12 mb-16">
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16 text-center md:text-left justify-center">
+              <h2 className="font-gt-extended font-bold text-6xl md:text-7xl text-white mb-0 whitespace-nowrap">
+                CONTACTO
+              </h2>
+              <div className="w-20 h-1 md:w-1 md:h-20 bg-white mx-0 md:mx-6"></div>
+              <p className="font-montreal-medium text-xl text-white max-w-2xl mb-0">
+                Te invitamos a dejarnos tus datos para recibir más información sobre<br />
+                Palmera de los Remeros
+              </p>
+            </div>
           </div>
 
           {/* Contact Form */}

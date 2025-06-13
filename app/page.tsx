@@ -21,11 +21,12 @@ export default function Home() {
       {/* Sección 3: Un Entorno Inigualable */}
       <Entorno />
       
+      {/* Sección 5: Conocé el Proyecto */}
+      <Proyecto />
+      
       {/* Sección 4: Amenities del Proyecto */}
       <Amenities />
       
-      {/* Sección 5: Conocé el Proyecto */}
-      <Proyecto />
       
       {/* Sección 6: Unidades */}
       <Unidades />

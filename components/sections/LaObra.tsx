@@ -5,12 +5,12 @@ import VideoPlayer from '@/components/ui/VideoPlayer';
 
 export default function LaObra() {
   return (
-    <section id="la-obra" className="section-padding bg-primary-white">
+    <section id="la-obra" className="section-padding bg-primary-light">
       <div className="container-custom">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="heading-lg text-primary-navy mb-6">LA OBRA</h2>
-          <p className="body-lg text-primary-blue max-w-3xl mx-auto">
+          <h2 className="heading-lg text-primary-cream mb-6">LA OBRA</h2>
+          <p className="body-lg text-primary-cream max-w-3xl mx-auto">
             Mirá el avance de los trabajos en terreno. Palmera de los Remeros ya está en camino.
           </p>
         </div>

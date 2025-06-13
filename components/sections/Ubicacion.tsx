@@ -31,12 +31,12 @@ export default function Ubicacion() {
 
           {/* Left Panel - Green Background */}
           <div className="col-4">
-            <div className="bg-primary-sage text-white p-8 h-full max-h-[500px]">
+            <div className="bg-primary-sage text-primary-cream p-8 h-full max-h-[600px]">
               <div className="space-y-12">
                 {/* Gastronomía */}
                 <div>
                   <h3 className="font-montreal-bold text-2xl mb-6 text-primary-cream">Gastronomía</h3>
-                  <div className="space-y-1 text-sm font-montreal-light ">
+                  <div className="space-y-1 text-xs font-montreal-light ">
                     <p>Kansas</p>
                     <p>La Valiente Focacceria</p>
                     <p>Rapa Nui Nordelta</p>
@@ -52,7 +52,7 @@ export default function Ubicacion() {
                 {/* Servicios */}
                 <div>
                   <h3 className="font-montreal-bold text-2xl mb-6">Servicios</h3>
-                  <div className="space-y-1 text-sm">
+                  <div className="space-y-1 text-xs">
                     <p>Carrefour</p>
                     <p>Sport Club Remeros</p>
                     <p>Uces Tigre</p>
