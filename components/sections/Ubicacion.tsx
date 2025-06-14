@@ -30,41 +30,43 @@ export default function Ubicacion() {
           </div>
 
           {/* Main Content: Green Box + Map */}
-          <div className="col-12 flex justify-center items-start gap-12">
-            <div className="flex flex-col">
-              <div className="bg-primary-sage text-primary-cream p-8 h-full min-h-[500px] flex flex-col justify-between">
-                <div>
-                  <h3 className="font-montreal-bold text-2xl mb-6 text-primary-cream">Gastronomía</h3>
-                  <div className="space-y-1 text-xs font-montreal-light ">
-                    <p>Kansas</p>
-                    <p>La Valiente Focacceria</p>
-                    <p>Rapa Nui Nordelta</p>
-                    <p>La Pulperie</p>
-                    <p>Cosqo Holy</p>
-                    <p>Le Pain Quotidien</p>
-                    <p>Obvio Carne y Pasta</p>
-                    <p>Sushi Club</p>
-                    <p>Los Inmortales</p>
+          <div className="col-12 flex justify-center items-start gap-12 h-[600px]">
+            <div className="flex flex-col self-start h-full">
+              <div className="bg-primary-sage text-primary-cream h-full flex flex-col justify-between">
+                <div className="py-4 px-6">
+                  <div>
+                    <h3 className="font-montreal-bold text-2xl mb-6 text-primary-cream">Gastronomía</h3>
+                    <div className="space-y-1 text-xs font-montreal-light ">
+                      <p>Kansas</p>
+                      <p>La Valiente Focacceria</p>
+                      <p>Rapa Nui Nordelta</p>
+                      <p>La Pulperie</p>
+                      <p>Cosqo Holy</p>
+                      <p>Le Pain Quotidien</p>
+                      <p>Obvio Carne y Pasta</p>
+                      <p>Sushi Club</p>
+                      <p>Los Inmortales</p>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <h3 className="font-montreal-bold text-2xl mb-6">Servicios</h3>
-                  <div className="space-y-1 text-xs">
-                    <p>Carrefour</p>
-                    <p>Sport Club Remeros</p>
-                    <p>Uces Tigre</p>
-                    <p>Centro Comercial</p>
-                    <p>Nordelta Remeros</p>
-                    <p>Plaza</p>
-                    <p>Jumbo Nordelta</p>
-                    <p>Universidad Siglo 21</p>
-                    <p>Nordelta Golf Club</p>
+                  <div>
+                    <h3 className="font-montreal-bold text-2xl mb-6">Servicios</h3>
+                    <div className="space-y-1 text-xs">
+                      <p>Carrefour</p>
+                      <p>Sport Club Remeros</p>
+                      <p>Uces Tigre</p>
+                      <p>Centro Comercial</p>
+                      <p>Nordelta Remeros</p>
+                      <p>Plaza</p>
+                      <p>Jumbo Nordelta</p>
+                      <p>Universidad Siglo 21</p>
+                      <p>Nordelta Golf Club</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col">
-              <div className="relative w-[600px] h-[600px] max-w-full rounded-lg overflow-hidden">
+            <div className="flex flex-col self-start h-full">
+              <div className="relative w-[600px] h-full max-w-full rounded-lg overflow-hidden">
                 {!imageError ? (
                   <Image
                     src="/images/mapa.png"
