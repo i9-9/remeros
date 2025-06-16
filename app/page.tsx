@@ -1,6 +1,7 @@
 import React from 'react';
 import Hero from '@/components/sections/Hero';
 import Ubicacion from '@/components/sections/Ubicacion';
+import Ubicacion2 from '@/components/sections/Ubicacion2';
 import Entorno from '@/components/sections/Entorno';
 import Amenities from '@/components/sections/Amenities';
 import Proyecto from '@/components/sections/Proyecto';
@@ -15,8 +16,11 @@ export default function Home() {
       {/* Sección 1: Hero + Navigation */}
       <Hero />
       
+      {/* Sección 2: Ubicación 
+      <Ubicacion />*/}
+      
       {/* Sección 2: Ubicación */}
-      <Ubicacion />
+      <Ubicacion2 />
       
       {/* Sección 3: Un Entorno Inigualable */}
       <Entorno />

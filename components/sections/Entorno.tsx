@@ -23,7 +23,7 @@ export default function Entorno() {
             </span>
           </h2>
           {/* Subtítulo a la derecha */}
-          <p className="text-white text-left font-montreal-medium text-xl md:text-2xl max-w-xl lg:leading-[1]">
+          <p className="text-white text-left font-montreal-medium text-xl leading-[1.2rem] md:text-2xl max-w-xl lg:leading-[1.4rem]">
             Un lugar que combina lo mejor de lo<br />
             natural y lo urbano
           </p>
