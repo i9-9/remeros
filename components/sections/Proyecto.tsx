@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
+import Image from 'next/image';
 
 export default function Proyecto() {
   const marqueeRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -51,11 +52,16 @@ export default function Proyecto() {
           </div>
           {/* Project Image */}
           <div className="col-12 mb-16">
-            <img
-              src="/images/proyecto.png"
-              alt="Palmera de los Remeros - Vista aérea del proyecto"
-              className="w-full h-auto rounded-lg"
-            />
+            <div className="relative max-w-4xl mx-auto -mt-24 md:-mt-36 z-0">
+              <Image
+                src="/images/proyecto.png"
+                alt="Palmera de los Remeros - Vista aérea del proyecto"
+                width={800}
+                height={600}
+                className="w-full h-auto rounded-lg"
+                priority
+              />
+            </div>
           </div>
           {/* Stats Section */}
           <div className="col-12 mb-16">

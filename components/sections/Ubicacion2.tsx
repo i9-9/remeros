@@ -470,21 +470,6 @@ export default function UbicacionSimple() {
   // Obtener API key de variables de entorno con fallback
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyA4wH8mkgtrU90kRb3PUT74sAxoOFdBCnc";
   
-  const [activeCategory, setActiveCategory] = useState<'gastronomia' | 'servicios'>('gastronomia');
-  
-  // Verificar que la API key esté definida
-  if (!GOOGLE_MAPS_API_KEY) {
-    console.error('❌ GOOGLE_MAPS_API_KEY no está definida');
-    return (
-      <div className="w-full h-[400px] bg-red-50 flex items-center justify-center">
-        <div className="text-center p-6">
-          <h3 className="text-red-800 font-bold mb-2">Error de configuración</h3>
-          <p className="text-red-600">Google Maps API Key no está configurada</p>
-        </div>
-      </div>
-    );
-  }
-  
   const handleMarkerHover = (pointName: string | null) => {
     setMapHoveredPoint(pointName);
   };
