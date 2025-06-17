@@ -62,7 +62,7 @@ export default function Hero() {
                 >
                   UNA NUEVA<br />
                   MANERA DE<br />
-                  <span className="text-primary-navy font-bold">VIVIR TIGRE.</span>
+                  <span className="text-primary-navy font-bold">VIVIR TIGRE</span>
                 </AnimatedTitle>
                 <AnimatedTitle 
                   className="w-full"
