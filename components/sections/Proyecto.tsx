@@ -56,6 +56,9 @@ export default function Proyecto() {
                 src="/images/proyecto.png"
                 alt="Palmera de los Remeros - Vista aérea del proyecto"
                 className="w-full h-auto rounded-lg"
+                onLoad={() => console.log('✅ Imagen proyecto cargada exitosamente')}
+                onError={(e) => console.error('❌ Error cargando imagen proyecto:', e)}
+                style={{ border: '2px solid red' }}
               />
             </div>
           </div>
