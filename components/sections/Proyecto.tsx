@@ -51,16 +51,11 @@ export default function Proyecto() {
           </div>
           {/* Project Image */}
           <div className="col-12 mb-16">
-            <div className="relative max-w-4xl mx-auto -mt-24 md:-mt-36 z-0">
-              <img
-                src="/images/proyecto.png"
-                alt="Palmera de los Remeros - Vista aérea del proyecto"
-                className="w-full h-auto rounded-lg"
-                onLoad={() => console.log('✅ Imagen proyecto cargada exitosamente')}
-                onError={(e) => console.error('❌ Error cargando imagen proyecto:', e)}
-                style={{ border: '2px solid red' }}
-              />
-            </div>
+            <img
+              src="/images/proyecto.png"
+              alt="Palmera de los Remeros - Vista aérea del proyecto"
+              className="w-full h-auto rounded-lg"
+            />
           </div>
           {/* Stats Section */}
           <div className="col-12 mb-16">
