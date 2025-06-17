@@ -470,11 +470,7 @@ export default function UbicacionSimple() {
   // Obtener API key de variables de entorno con fallback
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyA4wH8mkgtrU90kRb3PUT74sAxoOFdBCnc";
   
-  // Debug logging
-  console.log('🔑 API Key configurada:', GOOGLE_MAPS_API_KEY ? 'SÍ' : 'NO');
-  console.log('🌍 Environment:', process.env.NODE_ENV);
-  console.log('🔑 API Key length:', GOOGLE_MAPS_API_KEY?.length || 0);
-  console.log('🔑 API Key starts with:', GOOGLE_MAPS_API_KEY?.substring(0, 10) + '...');
+  const [activeCategory, setActiveCategory] = useState<'gastronomia' | 'servicios'>('gastronomia');
   
   // Verificar que la API key esté definida
   if (!GOOGLE_MAPS_API_KEY) {
