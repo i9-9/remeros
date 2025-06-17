@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
@@ -53,11 +52,9 @@ export default function Proyecto() {
           {/* Project Image */}
           <div className="col-12 mb-16">
             <div className="relative max-w-4xl mx-auto -mt-24 md:-mt-36 z-0">
-              <Image
+              <img
                 src="/images/proyecto.png"
                 alt="Palmera de los Remeros - Vista aérea del proyecto"
-                width={800}
-                height={600}
                 className="w-full h-auto rounded-lg"
               />
             </div>
