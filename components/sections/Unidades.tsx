@@ -6,12 +6,13 @@ import Image from 'next/image'
 export default function Unidades() {
   const [currentImage, setCurrentImage] = useState(0)
   
-  const images = [
-    '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 07_LIVING_FI (1).jpg',
-    '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 02_PEATONAL_FI (2).jpg',
-    '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 01_AEREA_FI (2).jpg',
-    // Add more images as needed
-  ]
+  // Remove or comment out the unused variable 'images'
+  // const images = [
+  //   '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 07_LIVING_FI (1).jpg',
+  //   '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 02_PEATONAL_FI (2).jpg',
+  //   '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 01_AEREA_FI (2).jpg',
+  //   // Add more images as needed
+  // ]
 
   return (
     <section id="unidades" className="bg-primary-cream py-20">

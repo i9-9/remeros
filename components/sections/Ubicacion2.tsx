@@ -2,15 +2,38 @@
 
 import { useState, useEffect, useRef } from 'react'
 
+// Variable global para evitar múltiples cargas
+let isGoogleMapsLoading = false;
+let isGoogleMapsLoaded = false;
+
 // Definir tipos para Google Maps
 interface GoogleMapsMarker {
-  setAnimation: (animation: any) => void;
-  getPosition: () => any;
+  setAnimation: (animation: unknown) => void;
+  getPosition: () => unknown;
   addListener: (event: string, callback: () => void) => void;
+  content?: HTMLElement;
+  position: { lat: number; lng: number };
 }
 
 interface GoogleMapsMap {
-  panTo: (position: any) => void;
+  panTo: (position: unknown) => void;
+}
+
+interface GoogleMapsType {
+  maps: {
+    Map: new (element: HTMLElement, options: Record<string, unknown>) => GoogleMapsMap;
+    Marker: new (options: Record<string, unknown>) => GoogleMapsMarker;
+    InfoWindow: new (options: Record<string, unknown>) => {
+      open: (map: GoogleMapsMap, marker: GoogleMapsMarker) => void;
+    };
+    LatLng: new (lat: number, lng: number) => unknown;
+    Size: new (width: number, height: number) => unknown;
+    Point: new (x: number, y: number) => unknown;
+  };
+}
+
+interface WindowWithGoogleMaps extends Window {
+  google?: GoogleMapsType;
 }
 
 interface PointOfInterest {
@@ -25,368 +48,393 @@ interface PointsData {
   servicios: PointOfInterest[];
 }
 
-// Datos de puntos de interés con direcciones reales y específicas
+interface MarkerWithCoords extends GoogleMapsMarker {
+  originalCoords?: { lat: number; lng: number };
+}
+
+// Datos de puntos de interés
 const pointsOfInterest: PointsData = {
   gastronomia: [
-    { name: "Kansas", address: "Kansas Parrilla, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "La Valiente Focacceria", address: "La Valiente Focacceria, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Rapa Nui Nordelta", address: "Rapa Nui Heladería, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "La Pulperie", address: "La Pulperie, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Cosqo Holy", address: "Cosqo Holy, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Le Pain Quotidien", address: "Le Pain Quotidien Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Obvio Carne y Pasta", address: "Obvio Carne y Pasta, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Sushi Club", address: "Sushi Club Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Los Inmortales", address: "Los Inmortales Pizza, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 }
+    { name: "Kansas", address: "Kansas, Nordelta", lat: -34.40074416710421, lng: -58.63440970592327 },
+    { name: "La Valiente Focacceria", address: "La Valiente Focacceria", lat: -34.399007932025626, lng: -58.64392662883605 },
+    { name: "Rapa Nui Nordelta", address: "Rapa Nui Nordelta", lat: -34.40219457094175, lng: -58.64975470560262 },
+    { name: "La Pulperie", address: "La Pulperie", lat: -34.39787813487022, lng: -58.65693877438935 },
+    { name: "Cosqo Holy", address: "Cosqo", lat: -34.40615972572545, lng: -58.619141775129734 },
+    { name: "Le Pain Quotidien", address: "Le Pain Quotidien", lat: -34.39846443462028, lng: -58.65125818729609 },
+    { name: "Obvio Carne y Pasta", address: "Obvio Carne y Pasta", lat: -34.39970041043506, lng: -58.64822105000044 },
+    { name: "Sushi Club", address: "Sushi Club", lat: -34.395153896893596, lng: -58.65117149997519 },
+    { name: "Los Inmortales", address: "Los Inmortales", lat: -34.39504982382221, lng: -58.64980365258116 }
   ],
   servicios: [
-    { name: "Carrefour", address: "Carrefour Nordelta, Av. de los Lagos, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Sport Club Remeros", address: "Club de Remeros del Tigre, Paseo Victorica, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Uces Tigre", address: "Universidad UCES Tigre, Nordelta, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Centro Comercial", address: "Nordelta Shopping, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Nordelta Remeros Plaza", address: "Remeros Plaza Shopping, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Plaza", address: "Plaza Central Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Jumbo Nordelta", address: "Jumbo Nordelta, Av. de los Lagos, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Universidad Siglo 21", address: "Universidad Siglo 21 Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 },
-    { name: "Nordelta Golf Club", address: "Nordelta Golf Club, Nordelta, Tigre, Buenos Aires", lat: 0, lng: 0 }
+    { name: "Remeros Plaza", address: "Remeros Plaza", lat: -34.40720278312742, lng: -58.61810661168479 },
+    { name: "Carrefour", address: "Carrefour", lat: -34.404075539923, lng: -58.619988990258214 },
+    { name: "Jumbo Nordelta", address: "Jumbo", lat: -34.400031761925646, lng: -58.6541856703179 },
+    { name: "Sport Club Remeros", address: "Sport Club Remeros", lat: -34.40587618200035, lng: -58.61889804317755 },
+    { name: "Universidad Siglo 21", address: "Universidad Siglo 21", lat: -34.396964094648624, lng: -58.643214712661795 },
+    { name: "Uces Tigre", address: "UCES Tigre", lat: -34.4061354915669, lng: -58.62020656512676 },
+    { name: "Centro Comercial", address: "Centro Comercial Nordelta", lat: -34.3987369256382, lng: -58.65146493073389 },
+    { name: "Nordelta Golf Club", address: "Nordelta Golf Club", lat: -34.41495790925383, lng: -58.63872754237277 },
+    { name: "Plaza", address: "Plaza", lat: -34.40689195297588, lng: -58.61589475967586 }
   ]
 };
 
-// Ubicación exacta del proyecto Palmera de los Remeros
+// Ubicación del proyecto
 const projectLocation = { 
-  lat: -34.4128, 
-  lng: -58.6416,
-  address: "Av. Santa María de las Conchas, Rincón de Milberg, 1624 Tigre, Provincia de Buenos Aires"
+  lat: -34.40692307342323, 
+  lng: -58.6187122075483,
+  address: "Camino de los Remeros y Ruta 27, Nordelta"
 };
 
-// Función para geocodificar direcciones
-async function geocodeAddress(address: string, apiKey: string): Promise<{lat: number, lng: number} | null> {
-  try {
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}&region=ar`
-    );
-    const data = await response.json();
-    
-    if (data.status === 'OK' && data.results.length > 0) {
-      const location = data.results[0].geometry.location;
-      return { lat: location.lat, lng: location.lng };
+// Función simplificada para cargar Google Maps
+function loadGoogleMaps(apiKey: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // Si ya está cargado, resolver inmediatamente
+    if (isGoogleMapsLoaded && (window as WindowWithGoogleMaps).google?.maps?.Map) {
+      console.log('✅ Google Maps ya cargado');
+      resolve();
+      return;
     }
-    return null;
-  } catch (error) {
-    console.error('Error geocoding address:', address, error);
-    return null;
-  }
+
+    // Si ya se está cargando, esperar
+    if (isGoogleMapsLoading) {
+      console.log('⏳ Google Maps ya se está cargando, esperando...');
+      const checkInterval = setInterval(() => {
+        if (isGoogleMapsLoaded && (window as WindowWithGoogleMaps).google?.maps?.Map) {
+          clearInterval(checkInterval);
+          resolve();
+        }
+      }, 100);
+      
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        reject(new Error('Timeout esperando Google Maps'));
+      }, 10000);
+      return;
+    }
+
+    // Marcar como cargando
+    isGoogleMapsLoading = true;
+
+    console.log('🔄 Cargando Google Maps...');
+
+    // Función de callback global
+    const callbackName = 'initGoogleMapsSimple';
+    (window as WindowWithGoogleMaps & { [key: string]: () => void })[callbackName] = () => {
+      console.log('✅ Google Maps cargado exitosamente');
+      isGoogleMapsLoaded = true;
+      isGoogleMapsLoading = false;
+      resolve();
+    };
+
+    // Crear script solo si no existe
+    let script = document.getElementById('google-maps-api') as HTMLScriptElement;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = 'google-maps-api';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=${callbackName}`;
+      script.async = true;
+      script.defer = true;
+      
+      script.onerror = () => {
+        console.error('❌ Error cargando Google Maps');
+        isGoogleMapsLoading = false;
+        reject(new Error('Error cargando Google Maps'));
+      };
+
+      document.head.appendChild(script);
+    } else {
+      // El script ya existe, solo esperar a que se cargue
+      const checkExisting = setInterval(() => {
+        if ((window as WindowWithGoogleMaps).google?.maps?.Map) {
+          clearInterval(checkExisting);
+          isGoogleMapsLoaded = true;
+          isGoogleMapsLoading = false;
+          resolve();
+        }
+      }, 100);
+    }
+  });
 }
 
-function GoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: { 
+function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: { 
   apiKey: string, 
   hoveredPoint: string | null,
   onMarkerHover: (pointName: string | null) => void 
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<GoogleMapsMap | null>(null);
-  const [markers, setMarkers] = useState<{ [key: string]: GoogleMapsMarker }>({});
+  const [markers, setMarkers] = useState<{ [key: string]: MarkerWithCoords }>({});
   const [isLoaded, setIsLoaded] = useState(false);
-  const [geocodedPoints, setGeocodedPoints] = useState<PointsData>(pointsOfInterest);
-  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const mapInstanceRef = useRef<GoogleMapsMap | null>(null);
 
-  // Cargar Google Maps script
+  // Cargar Google Maps
   useEffect(() => {
-    // Verificar si Google Maps ya está cargado globalmente
-    if ((window as any).google?.maps) {
-      setIsLoaded(true);
-      return;
-    }
+    let isMounted = true;
 
-    // Verificar si ya hay un script de Google Maps en el DOM
-    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-    if (existingScript) {
-      // Si ya existe un script, escuchar cuando se cargue
-      const checkGoogleMaps = () => {
-        if ((window as any).google?.maps) {
+    const initGoogleMaps = async () => {
+      try {
+        await loadGoogleMaps(apiKey);
+        if (isMounted) {
           setIsLoaded(true);
-        } else {
-          setTimeout(checkGoogleMaps, 100);
+          setError(null);
         }
-      };
-      checkGoogleMaps();
-      return;
-    }
+      } catch (err) {
+        console.error('Error cargando Google Maps:', err);
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Error desconocido');
+        }
+      }
+    };
 
-    // Solo crear un nuevo script si no existe ninguno
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => setIsLoaded(true);
-    script.onerror = () => console.error('Error loading Google Maps');
-    document.head.appendChild(script);
+    initGoogleMaps();
 
-    // Cleanup function
     return () => {
-      // No remover el script para evitar recargas en otros componentes
+      isMounted = false;
     };
   }, [apiKey]);
 
-  // Geocodificar direcciones
-  useEffect(() => {
-    const geocodeAllAddresses = async () => {
-      if (isGeocoding || !apiKey) return;
-      
-      setIsGeocoding(true);
-      console.log('Iniciando geocodificación...');
-      
-      const updatedPoints: PointsData = { 
-        gastronomia: [...pointsOfInterest.gastronomia],
-        servicios: [...pointsOfInterest.servicios]
-      };
-      
-      // Geocodificar gastronomía
-      for (const point of updatedPoints.gastronomia) {
-        if (point.lat === 0 && point.lng === 0) {
-          const coords = await geocodeAddress(point.address, apiKey);
-          if (coords) {
-            point.lat = coords.lat;
-            point.lng = coords.lng;
-            console.log(`✅ ${point.name}: ${coords.lat}, ${coords.lng}`);
-          } else {
-            point.lat = projectLocation.lat + (Math.random() - 0.5) * 0.01;
-            point.lng = projectLocation.lng + (Math.random() - 0.5) * 0.01;
-          }
-          await new Promise(resolve => setTimeout(resolve, 200));
-        }
-      }
-      
-      // Geocodificar servicios
-      for (const point of updatedPoints.servicios) {
-        if (point.lat === 0 && point.lng === 0) {
-          const coords = await geocodeAddress(point.address, apiKey);
-          if (coords) {
-            point.lat = coords.lat;
-            point.lng = coords.lng;
-            console.log(`✅ ${point.name}: ${coords.lat}, ${coords.lng}`);
-          } else {
-            point.lat = projectLocation.lat + (Math.random() - 0.5) * 0.01;
-            point.lng = projectLocation.lng + (Math.random() - 0.5) * 0.01;
-          }
-          await new Promise(resolve => setTimeout(resolve, 200));
-        }
-      }
-      
-      setGeocodedPoints(updatedPoints);
-      console.log('🎉 Geocodificación completada');
-    };
-
-    geocodeAllAddresses();
-  }, [apiKey, isGeocoding]);
-
   // Crear el mapa
   useEffect(() => {
-    if (!isLoaded || !mapRef.current || map) return;
+    if (!isLoaded || !mapRef.current || mapInstanceRef.current || error) return;
 
-    const googleMaps = (window as any).google.maps;
-    const mapInstance = new googleMaps.Map(mapRef.current, {
-      center: { lat: projectLocation.lat, lng: projectLocation.lng },
-      zoom: 15,
-      heading: 0, // Norte hacia arriba (0 grados)
-      tilt: 0, // Vista plana, sin inclinación
-      mapTypeId: 'roadmap', // Tipo de mapa estándar
-      styles: [
-        {
-          "featureType": "all",
-          "elementType": "geometry",
-          "stylers": [{ "color": "#E5DDD6" }]
+    try {
+      console.log('🗺️ Creando instancia del mapa...');
+      const googleMaps = (window as WindowWithGoogleMaps).google!.maps;
+      
+      const mapInstance = new googleMaps.Map(mapRef.current, {
+        center: projectLocation,
+        zoom: 17,
+        mapTypeId: 'roadmap',
+        styles: [
+          {
+            "featureType": "all",
+            "elementType": "geometry",
+            "stylers": [{ "color": "#E5DDD6" }]
+          },
+          {
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [{ "color": "#FFFFFF" }]
+          },
+          {
+            "featureType": "water",
+            "elementType": "all",
+            "stylers": [{ "color": "#8BA0BD" }]
+          }
+        ],
+        disableDefaultUI: true,
+        zoomControl: true,
+        fullscreenControl: true,
+        gestureHandling: 'greedy'
+      });
+
+      // Marker principal del proyecto
+      const projectMarker = new googleMaps.Marker({
+        position: projectLocation,
+        map: mapInstance,
+        title: "🏠 PALMERA DE LOS REMEROS",
+        icon: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="18" fill="#E2C18A" stroke="#2B303B" stroke-width="3"/>
+              <text x="20" y="28" font-family="Arial" font-size="18" fill="#2B303B" text-anchor="middle">🏠</text>
+            </svg>
+          `),
+          scaledSize: new googleMaps.Size(40, 40),
+          anchor: new googleMaps.Point(20, 20)
         },
-        {
-          "featureType": "all",
-          "elementType": "labels.text.fill",
-          "stylers": [{ "color": "#2B303B" }]
-        },
-        {
-          "featureType": "landscape",
-          "elementType": "all",
-          "stylers": [{ "color": "#D2CAC2" }]
-        },
-        {
-          "featureType": "road",
-          "elementType": "geometry",
-          "stylers": [{ "color": "#FFFFFF" }]
-        },
-        {
-          "featureType": "water",
-          "elementType": "all",
-          "stylers": [{ "color": "#8BA0BD" }]
-        }
-      ],
-      disableDefaultUI: true,
-      zoomControl: true,
-      rotateControl: true, // Permitir rotación
-      fullscreenControl: true, // Control de pantalla completa
-      mapTypeControl: true, // Control para cambiar tipo de mapa
-      streetViewControl: false,
-      scaleControl: true,
-      gestureHandling: 'greedy' // Permitir todos los gestos
-    });
+        zIndex: 1000
+      });
 
-    // Marker del proyecto principal
-    const projectMarker = new googleMaps.Marker({
-      position: { lat: projectLocation.lat, lng: projectLocation.lng },
-      map: mapInstance,
-      title: "🏠 PALMERA DE LOS REMEROS - Av. Santa María de las Conchas",
-      icon: {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-          <svg width="50" height="60" viewBox="0 0 50 60" xmlns="http://www.w3.org/2000/svg">
-            <path d="M25 5 C35 5, 42 12, 42 22 C42 32, 25 50, 25 50 C25 50, 8 32, 8 22 C8 12, 15 5, 25 5 Z" 
-                  fill="#E2C18A" stroke="#2B303B" stroke-width="3"/>
-            <circle cx="25" cy="22" r="10" fill="#2B303B" stroke="#FFFFFF" stroke-width="2"/>
-            <path d="M25 14 L30 18 L30 28 L20 28 L20 18 Z" fill="#E2C18A"/>
-            <text x="25" y="45" font-family="Arial" font-size="6" font-weight="bold" 
-                  fill="#2B303B" text-anchor="middle">PALMERA</text>
-          </svg>
-        `),
-        scaledSize: new googleMaps.Size(50, 60),
-        anchor: new googleMaps.Point(25, 50)
-      },
-      zIndex: 1000
-    });
+      // InfoWindow
+      const infoWindow = new googleMaps.InfoWindow({
+        content: `
+          <div style="padding: 12px; text-align: center; font-family: Arial;">
+            <h3 style="margin: 0 0 8px 0; color: #2B303B; font-size: 16px; font-weight: bold;">
+              🏠 PALMERA DE LOS REMEROS
+            </h3>
+            <p style="margin: 0 0 8px 0; color: #536A84; font-size: 12px;">
+              Tu nuevo hogar en el corazón de Nordelta
+            </p>
+            <p style="margin: 0; color: #80846A; font-size: 11px; line-height: 1.3;">
+              📍 Camino de los Remeros y Ruta 27<br/>
+              A 5 min del Centro Comercial Nordelta
+            </p>
+          </div>
+        `,
+        maxWidth: 280
+      });
 
-    // Círculo pulsante
-    const projectCircle = new googleMaps.Circle({
-      strokeColor: '#E2C18A',
-      strokeOpacity: 0.8,
-      strokeWeight: 3,
-      fillColor: '#E2C18A',
-      fillOpacity: 0.15,
-      map: mapInstance,
-      center: { lat: projectLocation.lat, lng: projectLocation.lng },
-      radius: 100,
-      zIndex: 999
-    });
+      projectMarker.addListener('click', () => {
+        infoWindow.open(mapInstance, projectMarker);
+      });
 
-    // Animación del círculo
-    let growing = true;
-    setInterval(() => {
-      const currentRadius = projectCircle.getRadius();
-      if (growing) {
-        if (currentRadius < 150) {
-          projectCircle.setRadius(currentRadius + 2);
-        } else {
-          growing = false;
-        }
-      } else {
-        if (currentRadius > 80) {
-          projectCircle.setRadius(currentRadius - 2);
-        } else {
-          growing = true;
-        }
-      }
-    }, 100);
+      // Mostrar InfoWindow automáticamente
+      setTimeout(() => {
+        infoWindow.open(mapInstance, projectMarker);
+      }, 1000);
 
-    // InfoWindow
-    const infoWindow = new googleMaps.InfoWindow({
-      content: `
-        <div style="padding: 12px; text-align: center; font-family: Arial;">
-          <h3 style="margin: 0 0 8px 0; color: #2B303B; font-size: 16px; font-weight: bold;">
-            🏠 PALMERA DE LOS REMEROS
-          </h3>
-          <p style="margin: 0 0 8px 0; color: #536A84; font-size: 12px;">
-            Tu nuevo hogar en Rincón de Milberg
-          </p>
-          <p style="margin: 0; color: #80846A; font-size: 11px; line-height: 1.3;">
-            📍 Av. Santa María de las Conchas<br/>
-            Rincón de Milberg, Tigre
-          </p>
-        </div>
-      `,
-      maxWidth: 280
-    });
+      mapInstanceRef.current = mapInstance;
+      setMap(mapInstance);
+      console.log('✅ Mapa creado exitosamente');
 
-    projectMarker.addListener('click', () => {
-      infoWindow.open(mapInstance, projectMarker);
-    });
-
-    setTimeout(() => {
-      infoWindow.open(mapInstance, projectMarker);
-    }, 1000);
-
-    setMap(mapInstance);
-  }, [isLoaded, map]);
+    } catch (err) {
+      console.error('Error creando mapa:', err);
+      setError('Error creando el mapa');
+    }
+  }, [isLoaded, error]);
 
   // Crear markers de puntos de interés
   useEffect(() => {
-    if (!map || !isLoaded) return;
+    if (!map || !isLoaded || error) return;
 
-    const googleMaps = (window as any).google.maps;
-    const newMarkers: { [key: string]: GoogleMapsMarker } = {};
+    try {
+      const googleMaps = (window as WindowWithGoogleMaps).google!.maps;
+      const newMarkers: { [key: string]: MarkerWithCoords } = {};
 
-    // Markers de gastronomía
-    geocodedPoints.gastronomia.forEach(point => {
-      if (point.lat !== 0 && point.lng !== 0) {
-        const marker = new googleMaps.Marker({
-          position: { lat: point.lat, lng: point.lng },
-          map: map,
-          title: point.name,
-          icon: {
-            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" fill="#80846A" stroke="#FFFFFF" stroke-width="2"/>
-                <text x="12" y="16" font-family="Arial" font-size="12" fill="#FFFFFF" text-anchor="middle">🍽️</text>
-              </svg>
-            `),
-            scaledSize: new googleMaps.Size(24, 24),
-            anchor: new googleMaps.Point(12, 12)
-          }
-        });
+      // Markers de gastronomía
+      pointsOfInterest.gastronomia.forEach(point => {
+        try {
+          const marker = new googleMaps.Marker({
+            position: new googleMaps.LatLng(point.lat, point.lng),
+            map: map,
+            title: point.name,
+            icon: {
+              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" fill="#80846A" stroke="#FFFFFF" stroke-width="2"/>
+                  <text x="12" y="16" font-family="Arial" font-size="12" fill="#FFFFFF" text-anchor="middle">🍽️</text>
+                </svg>
+              `),
+              scaledSize: new googleMaps.Size(24, 24),
+              anchor: new googleMaps.Point(12, 12)
+            }
+          }) as MarkerWithCoords;
 
-        marker.addListener('mouseover', () => onMarkerHover(point.name));
-        marker.addListener('mouseout', () => onMarkerHover(null));
-        newMarkers[point.name] = marker;
-      }
-    });
+          marker.addListener('mouseover', () => onMarkerHover(point.name));
+          marker.addListener('mouseout', () => onMarkerHover(null));
+          
+          // Agregar las coordenadas originales como propiedad custom para fácil acceso
+          marker.originalCoords = { lat: point.lat, lng: point.lng };
+          
+          newMarkers[point.name] = marker;
+        } catch (markerError) {
+          console.error(`Error creando marker para ${point.name}:`, markerError);
+        }
+      });
 
-    // Markers de servicios
-    geocodedPoints.servicios.forEach(point => {
-      if (point.lat !== 0 && point.lng !== 0) {
-        const marker = new googleMaps.Marker({
-          position: { lat: point.lat, lng: point.lng },
-          map: map,
-          title: point.name,
-          icon: {
-            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" fill="#536A84" stroke="#FFFFFF" stroke-width="2"/>
-                <text x="12" y="16" font-family="Arial" font-size="12" fill="#FFFFFF" text-anchor="middle">🏢</text>
-              </svg>
-            `),
-            scaledSize: new googleMaps.Size(24, 24),
-            anchor: new googleMaps.Point(12, 12)
-          }
-        });
+      // Markers de servicios
+      pointsOfInterest.servicios.forEach(point => {
+        try {
+          const marker = new googleMaps.Marker({
+            position: new googleMaps.LatLng(point.lat, point.lng),
+            map: map,
+            title: point.name,
+            icon: {
+              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" fill="#536A84" stroke="#FFFFFF" stroke-width="2"/>
+                  <text x="12" y="16" font-family="Arial" font-size="12" fill="#FFFFFF" text-anchor="middle">🏢</text>
+                </svg>
+              `),
+              scaledSize: new googleMaps.Size(24, 24),
+              anchor: new googleMaps.Point(12, 12)
+            }
+          }) as MarkerWithCoords;
 
-        marker.addListener('mouseover', () => onMarkerHover(point.name));
-        marker.addListener('mouseout', () => onMarkerHover(null));
-        newMarkers[point.name] = marker;
-      }
-    });
+          marker.addListener('mouseover', () => onMarkerHover(point.name));
+          marker.addListener('mouseout', () => onMarkerHover(null));
+          
+          // Agregar las coordenadas originales como propiedad custom
+          marker.originalCoords = { lat: point.lat, lng: point.lng };
+          
+          newMarkers[point.name] = marker;
+        } catch (markerError) {
+          console.error(`Error creando marker para ${point.name}:`, markerError);
+        }
+      });
 
-    setMarkers(newMarkers);
-  }, [map, isLoaded, geocodedPoints, onMarkerHover]);
+      setMarkers(newMarkers);
+      console.log('✅ Markers creados:', Object.keys(newMarkers).length);
+    } catch (err) {
+      console.error('Error general creando markers:', err);
+    }
+  }, [map, isLoaded, onMarkerHover, error]);
 
   // Efecto hover
   useEffect(() => {
-    if (hoveredPoint && markers[hoveredPoint]) {
-      const marker = markers[hoveredPoint];
-      const googleMaps = (window as any).google.maps;
-      marker.setAnimation(googleMaps.Animation.BOUNCE);
-      
-      setTimeout(() => {
-        marker.setAnimation(null);
-      }, 2000);
-
-      if (map) {
-        map.panTo(marker.getPosition());
+    if (hoveredPoint && markers[hoveredPoint] && map) {
+      try {
+        const marker = markers[hoveredPoint];
+        
+        // Intentar obtener la posición del marker
+        let coords = null;
+        
+        // Primero intentar usar las coordenadas guardadas
+        if (marker.originalCoords) {
+          coords = marker.originalCoords;
+        } else {
+          // Fallback: usar getPosition() con type assertion
+          const position = marker.getPosition() as { lat: () => number; lng: () => number } | { lat: number; lng: number } | null;
+          if (position) {
+            coords = {
+              lat: typeof (position as { lat: () => number }).lat === 'function' 
+                ? (position as { lat: () => number }).lat() 
+                : (position as { lat: number }).lat,
+              lng: typeof (position as { lng: () => number }).lng === 'function' 
+                ? (position as { lng: () => number }).lng() 
+                : (position as { lng: number }).lng
+            };
+          }
+        }
+        
+        // Último fallback: buscar en los datos originales
+        if (!coords) {
+          const allPoints = [...pointsOfInterest.gastronomia, ...pointsOfInterest.servicios];
+          const point = allPoints.find(p => p.name === hoveredPoint);
+          if (point) {
+            coords = { lat: point.lat, lng: point.lng };
+          }
+        }
+        
+        // Solo hacer panTo si tenemos coordenadas válidas
+        if (coords && typeof coords.lat === 'number' && typeof coords.lng === 'number') {
+          console.log('📍 Moviendo mapa a:', hoveredPoint, coords);
+          map.panTo(coords);
+        } else {
+          console.warn('⚠️ No se pudieron obtener coordenadas válidas para:', hoveredPoint);
+        }
+        
+      } catch (error) {
+        console.error('❌ Error en hover efect:', error);
       }
     }
   }, [hoveredPoint, markers, map]);
+
+  if (error) {
+    return (
+      <div className="w-full h-full bg-red-50 flex items-center justify-center border border-red-200">
+        <div className="text-center p-6">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <h3 className="font-montreal-medium text-lg text-red-800 mb-2">
+            Error cargando el mapa
+          </h3>
+          <p className="text-red-600 text-sm mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          >
+            Recargar página
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!isLoaded) {
     return (
@@ -399,13 +447,8 @@ function GoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
             </svg>
           </div>
           <h3 className="font-montreal-medium text-lg text-primary-navy mb-2">
-            {isGeocoding ? 'Obteniendo ubicaciones exactas...' : 'Cargando mapa...'}
+            Cargando mapa interactivo...
           </h3>
-          {isGeocoding && (
-            <p className="text-sm text-primary-blue">
-              Esto puede tomar unos segundos
-            </p>
-          )}
         </div>
       </div>
     );
@@ -414,11 +457,25 @@ function GoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
   return <div ref={mapRef} className="w-full h-full" />;
 }
 
-export default function Ubicacion2() {
+export default function UbicacionSimple() {
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
   const [mapHoveredPoint, setMapHoveredPoint] = useState<string | null>(null);
   
-  const GOOGLE_MAPS_API_KEY = "AIzaSyA4wH8mkgtrU90kRb3PUT74sAxoOFdBCnc";
+  // Obtener API key de variables de entorno con fallback
+  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyA4wH8mkgtrU90kRb3PUT74sAxoOFdBCnc";
+  
+  // Verificar que la API key esté definida
+  if (!GOOGLE_MAPS_API_KEY) {
+    console.error('❌ GOOGLE_MAPS_API_KEY no está definida');
+    return (
+      <div className="w-full h-[400px] bg-red-50 flex items-center justify-center">
+        <div className="text-center p-6">
+          <h3 className="text-red-800 font-bold mb-2">Error de configuración</h3>
+          <p className="text-red-600">Google Maps API Key no está configurada</p>
+        </div>
+      </div>
+    );
+  }
   
   const handleMarkerHover = (pointName: string | null) => {
     setMapHoveredPoint(pointName);
@@ -498,7 +555,7 @@ export default function Ubicacion2() {
               </div>
               <div className="h-full">
                 <div className="relative w-[600px] h-full overflow-hidden border border-primary-dark">
-                  <GoogleMapComponent 
+                  <SimpleGoogleMapComponent 
                     apiKey={GOOGLE_MAPS_API_KEY} 
                     hoveredPoint={activeHoveredPoint} 
                     onMarkerHover={handleMarkerHover}
@@ -511,7 +568,7 @@ export default function Ubicacion2() {
             <div className="md:hidden">
               <div className="mb-8">
                 <div className="relative w-full h-[400px] overflow-hidden border border-primary-dark">
-                  <GoogleMapComponent 
+                  <SimpleGoogleMapComponent 
                     apiKey={GOOGLE_MAPS_API_KEY} 
                     hoveredPoint={activeHoveredPoint} 
                     onMarkerHover={handleMarkerHover}

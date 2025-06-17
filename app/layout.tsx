@@ -10,7 +10,7 @@ const gtAmericaRegular = localFont({
   weight: '400',
 });
 
-// PP Neue Montreal fonts
+/* // PP Neue Montreal fonts
 const ppNeueMontreal = localFont({
   src: [
     {
@@ -27,7 +27,7 @@ const ppNeueMontreal = localFont({
     },
   ],
   variable: '--font-pp-neue',
-});
+}); */
 
 // GT America Extended
 const gtAmericaExtendedThin = localFont({

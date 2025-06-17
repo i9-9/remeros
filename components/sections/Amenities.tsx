@@ -1,28 +1,27 @@
 'use client';
 
 import React from 'react';
-import { Download } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Amenities() {
-  const handleDownload = (type: 'brochure' | 'plantas') => {
-    // Aquí se implementaría la descarga real de los PDFs
-    console.log(`Downloading ${type}`);
-    
-    // Simulación de descarga
-    const filename = type === 'brochure' ? 'Palmera-Remeros-Brochure.pdf' : 'Palmera-Remeros-Plantas.pdf';
-    
-    // En producción, esto sería una URL real del archivo
-    const dummyUrl = `https://grupoportland.com/remeros/downloads/${filename}`;
-    
-    // Crear elemento de descarga temporal
-    const link = document.createElement('a');
-    link.href = dummyUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // const handleDownload = (type: 'brochure' | 'plantas') => {
+  //   // Aquí se implementaría la descarga real de los PDFs
+  //   console.log(`Downloading ${type}`);
+  //   
+  //   // Simulación de descarga
+  //   const filename = type === 'brochure' ? 'Palmera-Remeros-Brochure.pdf' : 'Palmera-Remeros-Plantas.pdf';
+  //   
+  //   // En producción, esto sería una URL real del archivo
+  //   const dummyUrl = `https://grupoportland.com/remeros/downloads/${filename}`;
+  //   
+  //   // Crear elemento de descarga temporal
+  //   const link = document.createElement('a');
+  //   link.href = dummyUrl;
+  //   link.download = filename;
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
 
   return (
     <section id="amenities" className="relative">

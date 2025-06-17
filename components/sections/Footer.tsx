@@ -6,13 +6,6 @@ import Link from 'next/link';
 import PortlandLogo from '@/components/ui/PortlandLogo';
 
 export default function Footer() {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <footer className="bg-[#3A3F4A] text-white py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,7 +13,7 @@ export default function Footer() {
         <div className="hidden lg:flex lg:items-center lg:justify-between lg:w-full">
           {/* Logo Palmera de los Remeros - Left */}
           <div className="flex-shrink-0">
-            <Logo type="remeros-footer" size="xxl" className="text-white" />
+            <Logo type="remeros-footer" size="lg" className="text-white" />
           </div>
 
           {/* Navigation Links - Center */}

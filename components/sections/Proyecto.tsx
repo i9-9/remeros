@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export default function Proyecto() {
   const [isVisible, setIsVisible] = useState(false);
+  const marqueeRefs = useRef([]);
 
   const amenityLines = [
     "PILETA/ SUM/ PARRILLAS/ GYM/",
@@ -21,8 +22,30 @@ export default function Proyecto() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Actualizar la posición de cada marquee
+      marqueeRefs.current.forEach((ref, index) => {
+        if (ref) {
+          // Velocidad diferente para cada línea
+          const speed = (index + 1) * 0.8;
+          // Dirección alternada según el índice
+          const direction = index % 2 === 0 ? 1 : -1;
+          const translateX = (currentScrollY * speed * direction) % window.innerWidth;
+          
+          ref.style.transform = `translateX(${translateX}px)`;
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <section id="proyecto" className="bg-primary-navy text-white py-20 min-h-[200vh] w-full">
+    <section id="proyecto" className="bg-primary-navy text-white py-20 w-full">
       <div className="layout-margin">
         <div className="container-grid">
           <div className="col-12 text-center mb-16">
@@ -90,7 +113,7 @@ export default function Proyecto() {
           </div>
         </div>
       </div>
-      {/* Amenities Marquee List - full width, outside layout-margin */}
+      {/* Amenities Marquee List - controlado por scroll */}
       <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw] bg-primary-navy">
         {amenityLines.map((line, index) => (
           <div
@@ -98,16 +121,13 @@ export default function Proyecto() {
             className="w-full overflow-hidden whitespace-nowrap py-2"
           >
             <div
-              className={
-                `inline-block font-gt-extended-thin text-8xl md:text-6xl lg:text-8xl leading-none animate-marquee-infinite`
-              }
-              style={{
-                animationDirection: index % 2 === 1 ? 'reverse' : 'normal'
-              }}
+              ref={(el) => (marqueeRefs.current[index] = el)}
+              className="inline-block font-gt-extended-thin text-8xl md:text-6xl lg:text-8xl leading-none will-change-transform"
             >
-              {/* Duplicamos el texto para el bucle perfecto */}
-              <span className="mr-20">{line}</span>
-              <span className="mr-20">{line}</span>
+              {/* Múltiples repeticiones para cubrir el ancho completo */}
+              {[...Array(10)].map((_, i) => (
+                <span key={i} className="mr-20">{line}</span>
+              ))}
             </div>
           </div>
         ))}
