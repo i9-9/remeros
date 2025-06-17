@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 interface LogoProps {
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   type?: 'remeros' | 'portland' | 'remeros-footer';
 }
 
@@ -10,7 +10,8 @@ export default function Logo({ className = '', size = 'md', type = 'remeros' }: 
   const sizeClasses = {
     sm: 'h-8',
     md: 'h-12',
-    lg: 'h-16'
+    lg: 'h-16',
+    xl: 'h-32',
   };
 
   const logoSrc = {

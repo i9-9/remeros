@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import AnimatedTitle from '@/components/ui/AnimatedTitle'
 
 // Variable global para evitar múltiples cargas
 let isGoogleMapsLoading = false;
@@ -484,24 +485,32 @@ export default function UbicacionSimple() {
   const activeHoveredPoint = hoveredPoint || mapHoveredPoint;
   
   return (
-    <section id="ubicacion" className="bg-primary-cream min-h-screen overflow-hidden pt-12">
+    <section id="ubicacion" className="bg-primary-cream overflow-hidden py-12">
       <div className="layout-margin">
         <div className="container-grid">
           {/* Header */}
           <div className="col-12 mb-8">
             <div className="w-full flex flex-col md:flex-row items-center justify-center md:gap-8 gap-4">
-              <h2 className="font-gt-extended font-bold text-6xl md:text-5xl text-primary-dark whitespace-nowrap">
+              <AnimatedTitle 
+                className="font-gt-extended font-bold text-6xl md:text-5xl text-primary-dark whitespace-nowrap"
+                delay={0.2}
+                direction="up"
+              >
                 UBICACIÓN
-              </h2>
+              </AnimatedTitle>
               <div className="w-16 h-1 md:w-1 md:h-16 bg-primary-dark md:mx-6"></div>
-              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              <AnimatedTitle 
+                className="flex flex-col items-center md:items-start text-center md:text-left"
+                delay={0.4}
+                direction="up"
+              >
                 <h3 className="font-montreal-medium text-2xl text-primary-dark mb-2">
                   Camino de los Remeros y Ruta 27
                 </h3>
                 <p className="font-montreal-light text-md text-primary-dark">
                   Próximo a Remeros Plaza, a 5 minutos del Centro comercial Nordelta y del Acceso Tigre (Panamericana).
                 </p>
-              </div>
+              </AnimatedTitle>
             </div>
           </div>
 

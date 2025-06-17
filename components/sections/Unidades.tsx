@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import AnimatedTitle from '@/components/ui/AnimatedTitle'
 
 export default function Unidades() {
   const [currentImage, setCurrentImage] = useState(0)
@@ -21,17 +22,23 @@ export default function Unidades() {
           {/* Header */}
           <div className="col-12 mb-16">
             <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left gap-4 md:gap-12 w-full">
-              <div>
-                <h2 className="font-gt-extended font-bold text-6xl md:text-7xl text-primary-dark mb-0 whitespace-nowrap">
-                  UNIDADES
-                </h2>
-              </div>
+              <AnimatedTitle 
+                className="font-gt-extended font-bold text-6xl md:text-7xl text-primary-dark mb-0 whitespace-nowrap"
+                delay={0.2}
+                direction="up"
+              >
+                UNIDADES
+              </AnimatedTitle>
               <div className="hidden md:block w-1 h-16 bg-primary-dark mx-8"></div>
-              <div className="max-w-2xl">
+              <AnimatedTitle 
+                className="max-w-2xl"
+                delay={0.4}
+                direction="up"
+              >
                 <p className="font-montreal-medium text-xl text-primary-dark mb-0">
                   Nuestras unidades están diseñadas para combinar la tranquilidad de la naturaleza con las ventajas de la vida en la ciudad.
                 </p>
-              </div>
+              </AnimatedTitle>
             </div>
           </div>
 

@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import AnimatedTitle from '@/components/ui/AnimatedTitle';
+import AnimatedCounter from '@/components/ui/AnimatedCounter';
 
 export default function Proyecto() {
-  const [isVisible, setIsVisible] = useState(false);
   const marqueeRefs = useRef([]);
 
   const amenityLines = [
@@ -49,22 +50,14 @@ export default function Proyecto() {
       <div className="layout-margin">
         <div className="container-grid">
           <div className="col-12 text-center mb-16">
-            <h2 className="font-gt-extended font-medium text-6xl md:text-6xl lg:text-[9.5rem] md:leading-[1] text-center mb-0 z-10 relative">
-              <span className={`block transition-all duration-1000 ease-out ${
-                isVisible 
-                  ? 'opacity-100 blur-0 translate-y-0' 
-                  : 'opacity-0 blur-sm translate-y-8'
-              }`}>
-                CONOCÉ EL
-              </span>
-              <span className={`block md:-mt-5 transition-all duration-1000 ease-out delay-300 ${
-                isVisible 
-                  ? 'opacity-100 blur-0 translate-y-0' 
-                  : 'opacity-0 blur-sm translate-y-8'
-              }`}>
-                PROYECTO
-              </span>
-            </h2> 
+            <AnimatedTitle 
+              className="font-gt-extended font-medium text-6xl md:text-6xl lg:text-[9.5rem] md:leading-[1] text-center mb-0 z-10 relative"
+              delay={0.2}
+              direction="up"
+            >
+              <span className="block">CONOCÉ EL</span>
+              <span className="block md:-mt-5">PROYECTO</span>
+            </AnimatedTitle>
           </div>
           {/* Project Image */}
           <div className="col-12 mb-16">
@@ -83,26 +76,43 @@ export default function Proyecto() {
             <div className="border-t border-b border-white py-12">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div className="text-center">
-                  <div className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2">140</div>
+                  <AnimatedCounter
+                    to={140}
+                    duration={2.5}
+                    delay={0.2}
+                    className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2"
+                  />
                   <div className="font-gt-expanded-regular text-sm tracking-wider">
                     UNIDADES<br />
                     FUNCIONALES
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2">2,3,4&5</div>
+                  <div className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2">
+                    2,3,4&5
+                  </div>
                   <div className="font-gt-expanded-regular text-sm tracking-wider">
                     AMBIENTES
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2">16.000</div>
+                  <AnimatedCounter
+                    to={16000}
+                    duration={3}
+                    delay={0.4}
+                    className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2"
+                  />
                   <div className="font-gt-expanded-regular text-sm tracking-wider">
                     M2 DE CONSTRUCCIÓN
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2">1.100</div>
+                  <AnimatedCounter
+                    to={1100}
+                    duration={2.8}
+                    delay={0.6}
+                    className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2"
+                  />
                   <div className="font-gt-expanded-regular text-sm tracking-wider">
                     M2 DE ZÓCALO<br />
                     COMERCIAL

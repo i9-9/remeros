@@ -1,6 +1,9 @@
 'use client';
 
-import { useState } from 'react'
+import React from 'react';
+import { useState, useRef } from 'react'
+import AnimatedTitle from '@/components/ui/AnimatedTitle';
+import { motion, useInView } from 'framer-motion';
 
 export default function Contacto() {
   const [formData, setFormData] = useState({
@@ -9,6 +12,13 @@ export default function Contacto() {
     email: '',
     telefono: '',
     comentario: ''
+  })
+
+  // Ref para detectar cuando la sección entra en el viewport
+  const formRef = useRef(null)
+  const isInView = useInView(formRef, { 
+    once: true, // Solo anima una vez
+    amount: 0.2 // Se activa cuando el 20% de la sección es visible
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -24,29 +34,42 @@ export default function Contacto() {
     console.log('Form submitted:', formData)
   }
 
+  const inputVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: 0.2 + i * 0.12, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+    })
+  };
+
   return (
-    <section id="contacto" className="bg-primary-blue py-20 min-h-screen">
+    <section id="contacto" className="bg-primary-blue py-20">
       <div className="layout-margin">
         <div className="container-grid grid grid-cols-12 gap-x-[20px]">
           {/* Header */}
           <div className="col-12 mb-16">
             <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16 text-center md:text-left justify-center">
-              <h2 className="font-gt-extended font-medium text-6xl md:text-7xl text-white mb-0 whitespace-nowrap">
-              CONTACTO
-            </h2>
+              <AnimatedTitle 
+                className="font-gt-extended font-medium text-6xl md:text-7xl text-white mb-0 whitespace-nowrap"
+                delay={0.2}
+                direction="up"
+              >
+                CONTACTO
+              </AnimatedTitle>
               <div className="w-20 h-1 md:w-1 md:h-20 bg-white mx-0 md:mx-6"></div>
               <p className="font-montreal-medium text-xl text-white max-w-2xl mb-0">
-              Te invitamos a dejarnos tus datos para recibir más información sobre<br />
-              Palmera de los Remeros
-            </p>
+                Te invitamos a dejarnos tus datos para recibir más información sobre<br />
+                Palmera de los Remeros
+              </p>
             </div>
           </div>
 
           {/* Contact Form */}
-          <div className="col-span-12 col-start-1 sm:col-span-6 sm:col-start-6">
+          <div className="col-span-12 col-start-1 sm:col-span-6 sm:col-start-6" ref={formRef}>
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:gap-x-[20px]">
-                <input
+                <motion.input
                   type="text"
                   name="nombre"
                   placeholder="Nombre"
@@ -54,8 +77,12 @@ export default function Contacto() {
                   onChange={handleChange}
                   className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
                   required
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={0}
                 />
-                <input
+                <motion.input
                   type="text"
                   name="apellido"
                   placeholder="Apellido"
@@ -63,8 +90,12 @@ export default function Contacto() {
                   onChange={handleChange}
                   className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
                   required
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={1}
                 />
-                <input
+                <motion.input
                   type="email"
                   name="email"
                   placeholder="Email"
@@ -72,8 +103,12 @@ export default function Contacto() {
                   onChange={handleChange}
                   className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
                   required
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={2}
                 />
-                <input
+                <motion.input
                   type="tel"
                   name="telefono"
                   placeholder="Teléfono"
@@ -81,23 +116,37 @@ export default function Contacto() {
                   onChange={handleChange}
                   className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
                   required
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={3}
                 />
-                <textarea
+                <motion.textarea
                   name="comentario"
                   placeholder="Comentario"
                   value={formData.comentario}
                   onChange={handleChange}
                   rows={4}
                   className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors resize-none sm:col-span-2"
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={4}
                 />
-                <div className="flex flex-col sm:flex-row sm:justify-end sm:col-span-2">
+                <motion.div
+                  className="flex flex-col sm:flex-row sm:justify-end sm:col-span-2"
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={5}
+                >
                   <button
                     type="submit"
                     className="w-full sm:w-auto bg-primary-dark hover:bg-primary-dark/90 text-white px-12 py-4 font-montreal-medium text-lg transition-colors rounded-full"
                   >
                     Enviar
                   </button>
-                </div>
+                </motion.div>
               </div>
             </form>
           </div>
@@ -105,4 +154,4 @@ export default function Contacto() {
       </div>
     </section>
   )
-} 
+}

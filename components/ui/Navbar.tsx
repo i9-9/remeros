@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Logo from './Logo';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const navigation = [
   { name: 'UBICACIÓN', href: '#ubicacion' },
@@ -23,14 +24,20 @@ export default function Navbar() {
         
         {/* Desktop Navigation */}
         <div className="col-8 hidden lg:flex lg:gap-x-24 justify-end items-start">
-          {navigation.map((item) => (
-            <Link
+          {navigation.map((item, idx) => (
+            <motion.div
               key={item.name}
-              href={item.href}
-              className="text-sm font-montreal-medium leading-6 text-primary-navy hover:text-primary-blue transition-colors tracking-wider"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + idx * 0.12, duration: 0.5, ease: 'easeOut' }}
             >
-              {item.name}
-            </Link>
+              <Link
+                href={item.href}
+                className="text-sm font-montreal-medium leading-6 text-primary-navy hover:text-primary-blue transition-colors tracking-wider"
+              >
+                {item.name}
+              </Link>
+            </motion.div>
           ))}
         </div>
 
@@ -50,43 +57,51 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="lg:hidden">
-          <div className="fixed inset-0 z-50 bg-primary-navy">
-            <div className="layout-margin py-6">
-              <div className="flex items-center justify-between">
-                <Logo type="remeros" size="md" className="text-white" />
-                <button
-                  type="button"
-                  className="-m-2.5 rounded-md p-2.5 text-white"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <span className="sr-only">Cerrar menú</span>
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-primary-cream/10">
-                  <div className="space-y-2 py-6">
-                    {navigation.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="block px-3 py-2 text-base font-montreal-medium leading-7 text-white hover:text-primary-cream"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="fixed inset-0 z-50 bg-primary-navy flex flex-col"
+          >
+            <div className="flex justify-end items-center p-6">
+              <button
+                type="button"
+                className="-m-2.5 rounded-md p-2.5 text-white"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="sr-only">Cerrar menú</span>
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-          </div>
-        </div>
-      )}
+            <div className="flex-1 flex flex-col justify-center items-center">
+              {navigation.map((item, idx) => (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 40 }}
+                  transition={{ delay: 0.2 + idx * 0.15, duration: 0.5, ease: 'easeOut' }}
+                  className="w-full"
+                >
+                  <Link
+                    href={item.href}
+                    className="block text-3xl md:text-4xl font-gt-extended text-white text-center py-4 hover:text-primary-cream transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 } 
