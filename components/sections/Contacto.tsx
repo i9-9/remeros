@@ -3,7 +3,7 @@
 import React from 'react';
 import { useState, useRef } from 'react'
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, Variants } from 'framer-motion';
 
 export default function Contacto() {
   const [formData, setFormData] = useState({
@@ -34,14 +34,22 @@ export default function Contacto() {
     console.log('Form submitted:', formData)
   }
 
-  const inputVariants = {
-    hidden: { opacity: 0, y: 30 },
+  // Define animation variants
+  const inputVariants: Variants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30 
+    },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: 0.2 + i * 0.12, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+      transition: {
+        delay: 0.2 + i * 0.12,
+        duration: 0.5,
+        ease: [0.4, 0.0, 0.2, 1]
+      }
     })
-  };
+  }
 
   return (
     <section id="contacto" className="bg-primary-blue py-20">

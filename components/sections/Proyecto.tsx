@@ -6,22 +6,13 @@ import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
 
 export default function Proyecto() {
-  const marqueeRefs = useRef([]);
+  const marqueeRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const amenityLines = [
     "PILETA/ SUM/ PARRILLAS/ GYM/",
     "COWORK/ KIDS ROOM/ FOGONEROS/",
     "ESPACIO WELLNESS & SPA"
   ];
-
-  useEffect(() => {
-    // Trigger animation after component mounts
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 200);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -131,7 +122,11 @@ export default function Proyecto() {
             className="w-full overflow-hidden whitespace-nowrap py-2"
           >
             <div
-              ref={(el) => (marqueeRefs.current[index] = el)}
+              ref={(el) => {
+                if (marqueeRefs.current) {
+                  marqueeRefs.current[index] = el;
+                }
+              }}
               className="inline-block font-gt-extended-thin text-8xl md:text-6xl lg:text-8xl leading-none will-change-transform"
             >
               {/* Múltiples repeticiones para cubrir el ancho completo */}

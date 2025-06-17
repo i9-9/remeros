@@ -35,6 +35,7 @@ interface GoogleMapsType {
 
 interface WindowWithGoogleMaps extends Window {
   google?: GoogleMapsType;
+  [key: string]: unknown; // Add index signature for dynamic properties
 }
 
 interface PointOfInterest {
@@ -89,8 +90,10 @@ const projectLocation = {
 // Función simplificada para cargar Google Maps
 function loadGoogleMaps(apiKey: string): Promise<void> {
   return new Promise((resolve, reject) => {
+    const windowWithGM = window as unknown as WindowWithGoogleMaps;
+    
     // Si ya está cargado, resolver inmediatamente
-    if (isGoogleMapsLoaded && (window as WindowWithGoogleMaps).google?.maps?.Map) {
+    if (isGoogleMapsLoaded && windowWithGM.google?.maps?.Map) {
       console.log('✅ Google Maps ya cargado');
       resolve();
       return;
@@ -100,7 +103,7 @@ function loadGoogleMaps(apiKey: string): Promise<void> {
     if (isGoogleMapsLoading) {
       console.log('⏳ Google Maps ya se está cargando, esperando...');
       const checkInterval = setInterval(() => {
-        if (isGoogleMapsLoaded && (window as WindowWithGoogleMaps).google?.maps?.Map) {
+        if (isGoogleMapsLoaded && windowWithGM.google?.maps?.Map) {
           clearInterval(checkInterval);
           resolve();
         }
@@ -120,7 +123,7 @@ function loadGoogleMaps(apiKey: string): Promise<void> {
 
     // Función de callback global
     const callbackName = 'initGoogleMapsSimple';
-    (window as WindowWithGoogleMaps & { [key: string]: () => void })[callbackName] = () => {
+    windowWithGM[callbackName] = () => {
       console.log('✅ Google Maps cargado exitosamente');
       isGoogleMapsLoaded = true;
       isGoogleMapsLoading = false;
@@ -146,7 +149,7 @@ function loadGoogleMaps(apiKey: string): Promise<void> {
     } else {
       // El script ya existe, solo esperar a que se cargue
       const checkExisting = setInterval(() => {
-        if ((window as WindowWithGoogleMaps).google?.maps?.Map) {
+        if (windowWithGM.google?.maps?.Map) {
           clearInterval(checkExisting);
           isGoogleMapsLoaded = true;
           isGoogleMapsLoading = false;
@@ -201,7 +204,8 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
 
     try {
       console.log('🗺️ Creando instancia del mapa...');
-      const googleMaps = (window as WindowWithGoogleMaps).google!.maps;
+      const windowWithGM = window as unknown as WindowWithGoogleMaps;
+      const googleMaps = windowWithGM.google!.maps;
       
       const mapInstance = new googleMaps.Map(mapRef.current, {
         center: projectLocation,
@@ -291,7 +295,8 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
     if (!map || !isLoaded || error) return;
 
     try {
-      const googleMaps = (window as WindowWithGoogleMaps).google!.maps;
+      const windowWithGM = window as unknown as WindowWithGoogleMaps;
+      const googleMaps = windowWithGM.google!.maps;
       const newMarkers: { [key: string]: MarkerWithCoords } = {};
 
       // Markers de gastronomía
