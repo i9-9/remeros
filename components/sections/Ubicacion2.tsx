@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import AnimatedTitle from '@/components/ui/AnimatedTitle'
+import Logo from '@/components/ui/Logo'
 
 // Variable global para evitar múltiples cargas
 let isGoogleMapsLoading = false;
@@ -54,8 +55,15 @@ interface MarkerWithCoords extends GoogleMapsMarker {
   originalCoords?: { lat: number; lng: number };
 }
 
+// Ubicación del proyecto
+const projectLocation = { 
+  lat: -34.40692307342323, 
+  lng: -58.6187122075483,
+  address: "Camino de los Remeros y Ruta 27, Nordelta"
+};
+
 // Datos de puntos de interés
-const pointsOfInterest: PointsData = {
+const pointsOfInterest: PointsData & { proyecto?: PointOfInterest[] } = {
   gastronomia: [
     { name: "Kansas", address: "Kansas, Nordelta", lat: -34.40074416710421, lng: -58.63440970592327 },
     { name: "La Valiente Focacceria", address: "La Valiente Focacceria", lat: -34.399007932025626, lng: -58.64392662883605 },
@@ -77,14 +85,10 @@ const pointsOfInterest: PointsData = {
     { name: "Centro Comercial", address: "Centro Comercial Nordelta", lat: -34.3987369256382, lng: -58.65146493073389 },
     { name: "Nordelta Golf Club", address: "Nordelta Golf Club", lat: -34.41495790925383, lng: -58.63872754237277 },
     { name: "Plaza", address: "Plaza", lat: -34.40689195297588, lng: -58.61589475967586 }
+  ],
+  proyecto: [
+    { name: "Palmera de los Remeros", address: projectLocation.address, lat: projectLocation.lat, lng: projectLocation.lng }
   ]
-};
-
-// Ubicación del proyecto
-const projectLocation = { 
-  lat: -34.40692307342323, 
-  lng: -58.6187122075483,
-  address: "Camino de los Remeros y Ruta 27, Nordelta"
 };
 
 // Función simplificada para cargar Google Maps
@@ -160,10 +164,11 @@ function loadGoogleMaps(apiKey: string): Promise<void> {
   });
 }
 
-function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: { 
+function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover, onMapReady }: { 
   apiKey: string, 
   hoveredPoint: string | null,
-  onMarkerHover: (pointName: string | null) => void 
+  onMarkerHover: (pointName: string | null) => void,
+  onMapReady: (map: GoogleMapsMap) => void
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<GoogleMapsMap | null>(null);
@@ -238,12 +243,11 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
       const projectMarker = new googleMaps.Marker({
         position: projectLocation,
         map: mapInstance,
-        title: "🏠 PALMERA DE LOS REMEROS",
+        title: "PALMERA DE LOS REMEROS",
         icon: {
           url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
             <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
               <circle cx="20" cy="20" r="18" fill="#E2C18A" stroke="#2B303B" stroke-width="3"/>
-              <text x="20" y="28" font-family="Arial" font-size="18" fill="#2B303B" text-anchor="middle">🏠</text>
             </svg>
           `),
           scaledSize: new googleMaps.Size(40, 40),
@@ -257,7 +261,7 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
         content: `
           <div style="padding: 12px; text-align: center; font-family: Arial;">
             <h3 style="margin: 0 0 8px 0; color: #2B303B; font-size: 16px; font-weight: bold;">
-              🏠 PALMERA DE LOS REMEROS
+              PALMERA DE LOS REMEROS
             </h3>
             <p style="margin: 0 0 8px 0; color: #536A84; font-size: 12px;">
               Tu nuevo hogar en el corazón de Nordelta
@@ -282,13 +286,21 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
 
       mapInstanceRef.current = mapInstance;
       setMap(mapInstance);
+      setMarkers(prev => ({
+        ...prev,
+        ['Palmera de los Remeros']: {
+          ...projectMarker,
+          originalCoords: { lat: projectLocation.lat, lng: projectLocation.lng }
+        }
+      }));
+      onMapReady(mapInstance);
       console.log('✅ Mapa creado exitosamente');
 
     } catch (err) {
       console.error('Error creando mapa:', err);
       setError('Error creando el mapa');
     }
-  }, [isLoaded, error]);
+  }, [isLoaded, error, onMapReady]);
 
   // Crear markers de puntos de interés
   useEffect(() => {
@@ -310,7 +322,6 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
               url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
                 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="12" r="10" fill="#80846A" stroke="#FFFFFF" stroke-width="2"/>
-                  <text x="12" y="16" font-family="Arial" font-size="12" fill="#FFFFFF" text-anchor="middle">🍽️</text>
                 </svg>
               `),
               scaledSize: new googleMaps.Size(24, 24),
@@ -341,7 +352,6 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
               url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
                 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="12" r="10" fill="#536A84" stroke="#FFFFFF" stroke-width="2"/>
-                  <text x="12" y="16" font-family="Arial" font-size="12" fill="#FFFFFF" text-anchor="middle">🏢</text>
                 </svg>
               `),
               scaledSize: new googleMaps.Size(24, 24),
@@ -368,39 +378,46 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
     }
   }, [map, isLoaded, onMarkerHover, error]);
 
-  // Efecto hover
+  // Efecto hover - AQUÍ ESTÁ EL FIX
   useEffect(() => {
-    if (hoveredPoint && markers[hoveredPoint] && map) {
+    if (hoveredPoint && map) {
       try {
-        const marker = markers[hoveredPoint];
-        
-        // Intentar obtener la posición del marker
         let coords = null;
         
-        // Primero intentar usar las coordenadas guardadas
-        if (marker.originalCoords) {
-          coords = marker.originalCoords;
-        } else {
-          // Fallback: usar getPosition() con type assertion
-          const position = marker.getPosition() as { lat: () => number; lng: () => number } | { lat: number; lng: number } | null;
-          if (position) {
-            coords = {
-              lat: typeof (position as { lat: () => number }).lat === 'function' 
-                ? (position as { lat: () => number }).lat() 
-                : (position as { lat: number }).lat,
-              lng: typeof (position as { lng: () => number }).lng === 'function' 
-                ? (position as { lng: () => number }).lng() 
-                : (position as { lng: number }).lng
-            };
+        // Caso especial para el proyecto principal
+        if (hoveredPoint === 'Palmera de los Remeros') {
+          coords = projectLocation;
+          console.log('📍 Volviendo al proyecto principal:', coords);
+        } 
+        // Para otros puntos, usar la lógica existente
+        else if (markers[hoveredPoint]) {
+          const marker = markers[hoveredPoint];
+          
+          // Intentar obtener la posición del marker
+          if (marker.originalCoords) {
+            coords = marker.originalCoords;
+          } else {
+            // Fallback: usar getPosition() con type assertion
+            const position = marker.getPosition() as { lat: () => number; lng: () => number } | { lat: number; lng: number } | null;
+            if (position) {
+              coords = {
+                lat: typeof (position as { lat: () => number }).lat === 'function' 
+                  ? (position as { lat: () => number }).lat() 
+                  : (position as { lat: number }).lat,
+                lng: typeof (position as { lng: () => number }).lng === 'function' 
+                  ? (position as { lng: () => number }).lng() 
+                  : (position as { lng: number }).lng
+              };
+            }
           }
-        }
-        
-        // Último fallback: buscar en los datos originales
-        if (!coords) {
-          const allPoints = [...pointsOfInterest.gastronomia, ...pointsOfInterest.servicios];
-          const point = allPoints.find(p => p.name === hoveredPoint);
-          if (point) {
-            coords = { lat: point.lat, lng: point.lng };
+          
+          // Último fallback: buscar en los datos originales
+          if (!coords) {
+            const allPoints = [...pointsOfInterest.gastronomia, ...pointsOfInterest.servicios];
+            const point = allPoints.find(p => p.name === hoveredPoint);
+            if (point) {
+              coords = { lat: point.lat, lng: point.lng };
+            }
           }
         }
         
@@ -413,7 +430,7 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
         }
         
       } catch (error) {
-        console.error('❌ Error en hover efect:', error);
+        console.error('❌ Error en hover effect:', error);
       }
     }
   }, [hoveredPoint, markers, map]);
@@ -466,12 +483,17 @@ function SimpleGoogleMapComponent({ apiKey, hoveredPoint, onMarkerHover }: {
 export default function UbicacionSimple() {
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
   const [mapHoveredPoint, setMapHoveredPoint] = useState<string | null>(null);
+  const mapRef = useRef<GoogleMapsMap | null>(null);
   
   // Obtener API key de variables de entorno con fallback
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyA4wH8mkgtrU90kRb3PUT74sAxoOFdBCnc";
   
   const handleMarkerHover = (pointName: string | null) => {
     setMapHoveredPoint(pointName);
+  };
+
+  const handleMapReady = (map: GoogleMapsMap) => {
+    mapRef.current = map;
   };
 
   const activeHoveredPoint = hoveredPoint || mapHoveredPoint;
@@ -511,10 +533,22 @@ export default function UbicacionSimple() {
             {/* Desktop Layout */}
             <div className="hidden md:flex justify-center items-stretch gap-12 h-[600px] min-h-0">
               <div className="w-48 h-full flex flex-col">
-                <div className="bg-primary-sage text-primary-cream h-full flex flex-col justify-between box-border py-4 px-6 overflow-auto">
-                  <div className="flex flex-col gap-8">
+                <div className="bg-primary-sage text-primary-cream h-full flex flex-col box-border py-2 px-4">
+                  <div className="flex flex-col gap-4">
+                    {/* Logo Remeros */}
+                    <div className="flex justify-center mb-2 pt-4">
+                      <button
+                        onClick={() => setHoveredPoint('Palmera de los Remeros')}
+                        onMouseEnter={() => setHoveredPoint('Palmera de los Remeros')}
+                        className="transition-transform duration-200 hover:scale-105 active:scale-95"
+                        title="Volver a Palmera de los Remeros"
+                        tabIndex={0}
+                      >
+                        <Logo type="remeros-footer" size="md" className="text-primary-cream" />
+                      </button>
+                    </div>
                     <div>
-                      <h3 className="font-montreal-bold text-2xl mb-6 text-primary-cream">Gastronomía</h3>
+                      <h3 className="font-montreal-bold text-xl mb-4 text-primary-cream">Gastronomía</h3>
                       <div className="space-y-1 text-xs font-montreal-light">
                         {pointsOfInterest.gastronomia.map((point) => (
                           <p 
@@ -527,13 +561,13 @@ export default function UbicacionSimple() {
                             onMouseEnter={() => setHoveredPoint(point.name)}
                             onMouseLeave={() => setHoveredPoint(null)}
                           >
-                            🍽️ {point.name}
+                            {point.name}
                           </p>
                         ))}
                       </div>
                     </div>
-                    <div className="mt-8">
-                      <h3 className="font-montreal-bold text-2xl mb-6 text-primary-cream">Servicios</h3>
+                    <div className="mt-4">
+                      <h3 className="font-montreal-bold text-xl mb-4 text-primary-cream">Servicios</h3>
                       <div className="space-y-1 text-xs font-montreal-light">
                         {pointsOfInterest.servicios.map((point) => (
                           <p 
@@ -546,7 +580,7 @@ export default function UbicacionSimple() {
                             onMouseEnter={() => setHoveredPoint(point.name)}
                             onMouseLeave={() => setHoveredPoint(null)}
                           >
-                            🏢 {point.name}
+                            {point.name}
                           </p>
                         ))}
                       </div>
@@ -560,6 +594,7 @@ export default function UbicacionSimple() {
                     apiKey={GOOGLE_MAPS_API_KEY} 
                     hoveredPoint={activeHoveredPoint} 
                     onMarkerHover={handleMarkerHover}
+                    onMapReady={handleMapReady}
                   />
                 </div>
               </div>
@@ -573,12 +608,24 @@ export default function UbicacionSimple() {
                     apiKey={GOOGLE_MAPS_API_KEY} 
                     hoveredPoint={activeHoveredPoint} 
                     onMarkerHover={handleMarkerHover}
+                    onMapReady={handleMapReady}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-primary-sage text-primary-cream flex flex-col box-border py-4 px-4">
+                  {/* Logo Remeros Mobile */}
+                  <div className="flex justify-center mb-4">
+                    <button
+                      onClick={() => setHoveredPoint('Palmera de los Remeros')}
+                      className="transition-transform duration-200 hover:scale-105 active:scale-95"
+                      title="Volver a Palmera de los Remeros"
+                    >
+                      <Logo type="remeros-footer" size="sm" className="text-primary-cream" />
+                    </button>
+                  </div>
+                  
                   <div>
                     <h3 className="font-montreal-bold text-lg mb-4 text-primary-cream">Gastronomía</h3>
                     <div className="space-y-1 text-xs font-montreal-light">
@@ -593,7 +640,7 @@ export default function UbicacionSimple() {
                           onMouseEnter={() => setHoveredPoint(point.name)}
                           onMouseLeave={() => setHoveredPoint(null)}
                         >
-                          🍽️ {point.name}
+                          {point.name}
                         </p>
                       ))}
                     </div>
@@ -614,7 +661,7 @@ export default function UbicacionSimple() {
                           onMouseEnter={() => setHoveredPoint(point.name)}
                           onMouseLeave={() => setHoveredPoint(null)}
                         >
-                          🏢 {point.name}
+                          {point.name}
                         </p>
                       ))}
                     </div>
