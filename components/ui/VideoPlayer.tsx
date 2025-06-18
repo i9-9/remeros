@@ -103,6 +103,9 @@ export default function VideoPlayer({
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         preload="metadata"
+        autoPlay
+        loop
+        muted
       >
         <source src={videoUrl} type="video/mp4" />
         Tu navegador no soporta el elemento video.

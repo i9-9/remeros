@@ -6,6 +6,7 @@ import AnimatedCounter from '@/components/ui/AnimatedCounter';
 
 export default function Proyecto() {
   const marqueeRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   const amenityLines = [
     "PILETA/ SUM/ PARRILLAS/ GYM/",
@@ -36,18 +37,20 @@ export default function Proyecto() {
   }, []);
 
   return (
-    <section id="proyecto" className="bg-primary-navy text-white py-20 w-full">
+    <section id="proyecto" className="bg-primary-navy text-white py-20 w-full" ref={sectionRef}>
       <div className="layout-margin">
         <div className="container-grid">
-          <div className="col-12 text-center mb-16">
-            <AnimatedTitle 
-              className="font-gt-extended font-medium text-6xl md:text-6xl lg:text-[9.5rem] md:leading-[1] text-center mb-0 z-10 relative"
-              delay={0.2}
-              direction="up"
-            >
-              <span className="block">CONOCÉ EL</span>
-              <span className="block md:-mt-5">PROYECTO</span>
-            </AnimatedTitle>
+          <div className="col-12 text-center mb-16 flex flex-wrap justify-center gap-x-4">
+            {["CONOCÉ", "EL", "PROYECTO"].map((word, idx) => (
+              <AnimatedTitle
+                key={word}
+                className="font-gt-extended font-medium text-6xl md:text-6xl lg:text-[9.5rem] md:leading-[1] text-center mb-0 z-10 relative inline-block"
+                delay={0.2 + idx * 0.18}
+                direction="up"
+              >
+                <span className="block">{word}</span>
+              </AnimatedTitle>
+            ))}
           </div>
           {/* Project Image */}
           <div className="col-12 mb-16">
@@ -62,13 +65,13 @@ export default function Proyecto() {
           {/* Stats Section */}
           <div className="col-12 mb-16">
             <div className="border-t border-b border-white py-12">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 <div className="text-center">
                   <AnimatedCounter
                     to={140}
                     duration={2.5}
                     delay={0.2}
-                    className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2"
+                    className="font-gt-expanded-regular text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[4rem] mb-2"
                   />
                   <div className="font-gt-expanded-regular text-sm tracking-wider">
                     UNIDADES<br />
@@ -76,7 +79,7 @@ export default function Proyecto() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2">
+                  <div className="font-gt-expanded-regular text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[4rem] mb-2">
                     2,3,4&5
                   </div>
                   <div className="font-gt-expanded-regular text-sm tracking-wider">
@@ -88,7 +91,7 @@ export default function Proyecto() {
                     to={16000}
                     duration={3}
                     delay={0.4}
-                    className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2"
+                    className="font-gt-expanded-regular text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[4rem] mb-2"
                   />
                   <div className="font-gt-expanded-regular text-sm tracking-wider">
                     M2 DE CONSTRUCCIÓN
@@ -99,7 +102,7 @@ export default function Proyecto() {
                     to={1100}
                     duration={2.8}
                     delay={0.6}
-                    className="font-gt-expanded-regular text-3xl md:text-7xl lg:text-[4rem] mb-2"
+                    className="font-gt-expanded-regular text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[4rem] mb-2"
                   />
                   <div className="font-gt-expanded-regular text-sm tracking-wider">
                     M2 DE ZÓCALO<br />
