@@ -18,8 +18,9 @@ export default function AnimatedTitle({
 }: AnimatedTitleProps) {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.6,
-    rootMargin: '-50px 0px'
+    threshold: 0.1,
+    initialInView: true,
+    rootMargin: '-10px'
   })
 
   const getInitialPosition = () => {

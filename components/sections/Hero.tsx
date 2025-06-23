@@ -44,10 +44,10 @@ export default function Hero() {
             >
               <Link href="#ubicacion" scroll={true}>
                 <span className="inline-flex items-center justify-center w-full px-4 py-2 text-primary-navy font-montreal-medium text-lg hover:bg-white hover:text-primary-dark transition-all duration-300 rounded-full bg-white/60 backdrop-blur border border-primary-navy">
-                  QUIERO SABER MÁS
-                  <svg className="ml-2 w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                QUIERO SABER MÁS
+                <svg className="ml-2 w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
                 </span>
               </Link>
             </AnimatedTitle>
@@ -74,10 +74,10 @@ export default function Hero() {
                 >
                   <Link href="#ubicacion" scroll={true}>
                     <span className="inline-flex items-center justify-center w-full px-4 py-2 border border-primary-navy text-primary-navy font-montreal-medium text-lg hover:bg-white hover:text-primary-dark transition-all duration-300 rounded-full bg-white/60 backdrop-blur mt-8 mb-48">
-                      QUIERO SABER MÁS
-                      <svg className="ml-2 w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                    QUIERO SABER MÁS
+                    <svg className="ml-2 w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                     </span>
                   </Link>
                 </AnimatedTitle>

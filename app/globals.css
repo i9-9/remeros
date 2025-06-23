@@ -151,45 +151,50 @@ html {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
+.marquee-container {
+  position: relative;
+  width: 100vw;
+  max-width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  user-select: none;
+}
+
+.marquee-content {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  min-width: 100%;
+  gap: 1rem;
+  animation: scroll 80s linear infinite;
+}
+
+.marquee-content-reverse {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  min-width: 100%;
+  gap: 1rem;
+  animation: scroll-reverse 80s linear infinite;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
   }
-  100% {
+  to {
     transform: translateX(-100%);
   }
 }
 
-@keyframes marquee-reverse {
-  0% {
+@keyframes scroll-reverse {
+  from {
     transform: translateX(-100%);
   }
-  100% {
-    transform: translateX(0%);
+  to {
+    transform: translateX(0);
   }
 }
-
-.animate-marquee {
-  animation: marquee linear infinite;
-}
-
-.animate-marquee-reverse {
-  animation: marquee-reverse linear infinite;
-}
-
-@keyframes marquee-infinite {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee-infinite {
-  animation: marquee-infinite 50s linear infinite;
-  will-change: transform;
-} 
 
 /* Fuerza que solo uno maneje el scroll */
 html {

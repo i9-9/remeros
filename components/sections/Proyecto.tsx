@@ -1,40 +1,17 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
 
 export default function Proyecto() {
-  const marqueeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLElement | null>(null);
 
   const amenityLines = [
-    "PILETA/ SUM/ PARRILLAS/ GYM/",
-    "COWORK/ KIDS ROOM/ FOGONEROS/",
+    "PILETA / SUM / PARRILLAS / GYM /",
+    "COWORK / KIDS ROOM/ FOGONEROS /",
     "ESPACIO WELLNESS & SPA"
   ];
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Actualizar la posición de cada marquee
-      marqueeRefs.current.forEach((ref, index) => {
-        if (ref) {
-          // Velocidad diferente para cada línea
-          const speed = (index + 1) * 0.8;
-          // Dirección alternada según el índice
-          const direction = index % 2 === 0 ? 1 : -1;
-          const translateX = (currentScrollY * speed * direction) % window.innerWidth;
-          
-          ref.style.transform = `translateX(${translateX}px)`;
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <section id="proyecto" className="bg-primary-navy text-white py-20 w-full" ref={sectionRef}>
@@ -55,11 +32,11 @@ export default function Proyecto() {
           {/* Project Image */}
           <div className="col-12 mb-16">
             <div className="relative max-w-4xl mx-auto -mt-24 md:-mt-36 z-0">
-            <img
-  src="/images/proyecto2.png"
-  alt="Palmera de los Remeros - Vista aérea del proyecto"
-  className="w-full h-auto rounded-lg"
-/>
+              <img
+                src="/images/proyecto2.png"
+                alt="Palmera de los Remeros - Vista aérea del proyecto"
+                className="w-full h-auto rounded-lg"
+              />
             </div>
           </div>
           {/* Stats Section */}
@@ -114,25 +91,20 @@ export default function Proyecto() {
           </div>
         </div>
       </div>
-      {/* Amenities Marquee List - controlado por scroll */}
+      {/* Amenities Marquee List */}
       <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw] bg-primary-navy">
         {amenityLines.map((line, index) => (
-          <div
-            key={index}
-            className="w-full overflow-hidden whitespace-nowrap py-2"
-          >
-            <div
-              ref={(el) => {
-                if (marqueeRefs.current) {
-                  marqueeRefs.current[index] = el;
-                }
-              }}
-              className="inline-block font-gt-extended-thin text-8xl md:text-6xl lg:text-8xl leading-none will-change-transform"
-            >
-              {/* Múltiples repeticiones para cubrir el ancho completo */}
-              {[...Array(10)].map((_, i) => (
-                <span key={i} className="mr-20">{line}</span>
-              ))}
+          <div key={index} className="marquee-container py-4">
+            <div className={index % 2 === 0 ? 'marquee-content' : 'marquee-content-reverse'}>
+              <span className="font-gt-extended-thin text-6xl md:text-6xl lg:text-7xl xl:text-8xl whitespace-nowrap">
+                {line}
+              </span>
+              <span className="font-gt-extended-thin text-6xl md:text-6xl lg:text-7xl xl:text-8xl whitespace-nowrap">
+                {line}
+              </span>
+              <span className="font-gt-extended-thin text-6xl md:text-6xl lg:text-7xl xl:text-8xl whitespace-nowrap">
+                {line}
+              </span>
             </div>
           </div>
         ))}
