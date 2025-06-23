@@ -18,9 +18,8 @@ export function formatPhoneNumber(phone: string): string {
 }
 
 export function getUTMSource(): string {
-  if (typeof window !== 'undefined') {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('utm_source') || 'Directo';
-  }
-  return 'Directo';
+  if (typeof window === 'undefined') return 'Directo';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('utm_source') || 'Directo';
 } 

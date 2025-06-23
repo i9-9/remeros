@@ -1,72 +1,203 @@
 /**
- * Google Apps Script para formulario de contacto
- * Palmera de los Remeros - Grupo Portland
+ * Google Apps Script optimizado para Remeros
+ * Versión: 2.0.0
  */
 
+// Configuración de CORS headers
+function getCorsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
+    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+    'Access-Control-Max-Age': '3600',
+    'Access-Control-Allow-Credentials': 'true',
+    'Content-Type': 'application/json'
+  };
+}
+
+// Cache para rate limiting
+const CACHE_KEY_PREFIX = 'FORM_SUBMISSION_';
+const MAX_SUBMISSIONS_PER_HOUR = 5;
+
+function checkRateLimit(ipAddress) {
+  const cache = CacheService.getScriptCache();
+  const key = CACHE_KEY_PREFIX + ipAddress;
+  const currentCount = parseInt(cache.get(key) || '0');
+  
+  if (currentCount >= MAX_SUBMISSIONS_PER_HOUR) {
+    throw new Error('Demasiados intentos. Por favor, espera unos minutos.');
+  }
+  
+  cache.put(key, (currentCount + 1).toString(), 3600); // 1 hora de expiración
+  return true;
+}
+
+function validateFormData(data) {
+  const errors = [];
+  
+  // Validar campos requeridos
+  if (!data.nombre || data.nombre.trim().length === 0) {
+    errors.push('El nombre es requerido');
+  }
+  if (!data.apellido || data.apellido.trim().length === 0) {
+    errors.push('El apellido es requerido');
+  }
+  if (!data.email || !isValidEmail(data.email)) {
+    errors.push('El email es inválido');
+  }
+  if (!data.telefono || data.telefono.trim().length === 0) {
+    errors.push('El teléfono es requerido');
+  }
+  
+  // Validar longitud máxima
+  if (data.nombre && data.nombre.length > 50) {
+    errors.push('El nombre no puede tener más de 50 caracteres');
+  }
+  if (data.apellido && data.apellido.length > 50) {
+    errors.push('El apellido no puede tener más de 50 caracteres');
+  }
+  if (data.email && data.email.length > 100) {
+    errors.push('El email no puede tener más de 100 caracteres');
+  }
+  if (data.comentario && data.comentario.length > 500) {
+    errors.push('El comentario no puede tener más de 500 caracteres');
+  }
+  
+  if (errors.length > 0) {
+    throw new Error(errors.join('. '));
+  }
+  
+  return true;
+}
+
+function sanitizeInput(input) {
+  if (typeof input !== 'string') return '';
+  return input
+    .replace(/[<>]/g, '') // Remover tags HTML
+    .trim()
+    .substring(0, 500); // Limitar longitud
+}
+
+/**
+ * Maneja solicitudes GET
+ */
+function doGet() {
+  return HtmlService.createHtmlOutput(
+    `<html><body>
+      <h1>Servicio de Formulario Remeros</h1>
+      <p>Estado: <span style="color:green">✅ Activo</span></p>
+      <p>Última actualización: ${new Date().toLocaleDateString('es-AR')}</p>
+    </body></html>`
+  );
+}
+
+/**
+ * Maneja solicitudes POST - procesa los datos del formulario
+ */
 function doPost(e) {
+  // Lock para evitar escrituras concurrentes
+  const lock = LockService.getScriptLock();
   try {
-    // Parsear los datos del formulario
-    const data = JSON.parse(e.postData.contents);
+    lock.waitLock(10000);
+  } catch (error) {
+    return createErrorResponse('Servicio temporalmente no disponible');
+  }
+
+  try {
+    // Validar que tenemos datos
+    if (!e.parameter || Object.keys(e.parameter).length === 0) {
+      throw new Error('No se recibieron datos del formulario');
+    }
+
+    const formData = e.parameter;
     
-    // Obtener la hoja activa (crear una nueva si no existe)
+    // Validaciones básicas
+    if (!formData.email || !isValidEmail(formData.email)) {
+      throw new Error('Email requerido y debe ser válido');
+    }
+    
+    if (!formData.nombre || formData.nombre.trim().length < 2) {
+      throw new Error('Nombre requerido (mínimo 2 caracteres)');
+    }
+
+    // Obtener la hoja activa
     const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = spreadsheet.getSheetByName('Leads Palmera Remeros');
+    const sheet = spreadsheet.getSheetByName('Form Responses 1') || spreadsheet.getActiveSheet();
     
-    if (!sheet) {
-      sheet = spreadsheet.insertSheet('Leads Palmera Remeros');
-    }
-    
-    // Headers si es la primera vez
-    if (sheet.getLastRow() === 0) {
-      const headers = [
-        'Timestamp', 
-        'Nombre', 
-        'Apellido', 
-        'Email', 
-        'Teléfono', 
-        'Comentario', 
-        'UTM Source',
-        'IP',
-        'User Agent'
-      ];
-      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      
-      // Formatear headers
-      const headerRange = sheet.getRange(1, 1, 1, headers.length);
-      headerRange.setFontWeight('bold');
-      headerRange.setBackground('#2B303B');
-      headerRange.setFontColor('#FFFFFF');
-    }
-    
-    // Preparar datos de la fila
+    // Preparar datos con validación
     const timestamp = new Date();
     const rowData = [
       timestamp,
-      data.nombre || '',
-      data.apellido || '',
-      data.email || '',
-      data.telefono || '',
-      data.comentario || '',
-      data.utmSource || 'Directo',
-      data.ip || 'No disponible',
-      data.userAgent || 'No disponible'
+      sanitizeInput(formData.nombre),
+      sanitizeInput(formData.apellido || ''),
+      sanitizeInput(formData.telefono || ''),
+      formData.email.trim().toLowerCase(),
+      sanitizeInput(formData.comentario || ''),
+      formData.utmSource || 'Directo',
+      formData.userAgent || ''
     ];
     
-    // Insertar nueva fila al inicio (después de headers)
-    sheet.insertRowAfter(1);
-    sheet.getRange(2, 1, 1, rowData.length).setValues([rowData]);
+    // Insertar datos
+    sheet.appendRow(rowData);
     
-    // Formatear la nueva fila
-    const newRowRange = sheet.getRange(2, 1, 1, rowData.length);
-    newRowRange.setBackground('#F8F9FA');
+    // Enviar emails
+    try {
+      // Email de confirmación al usuario
+      sendConfirmationEmail({
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        email: formData.email,
+        telefono: formData.telefono,
+        comentario: formData.comentario
+      }, timestamp);
+
+      // Notificación al equipo
+      sendTeamNotification({
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        email: formData.email,
+        telefono: formData.telefono,
+        comentario: formData.comentario,
+        utmSource: formData.utmSource
+      }, timestamp, spreadsheet.getUrl());
+    } catch (emailError) {
+      console.error('Error enviando emails:', emailError);
+      // No fallamos el proceso si los emails fallan
+    }
     
-    // Auto-ajustar columnas
-    sheet.autoResizeColumns(1, rowData.length);
+    // Log para auditoría
+    console.log(`Nuevo contacto registrado: ${formData.email} - ${timestamp}`);
     
-    // Enviar email de confirmación al lead
-    if (data.email && isValidEmail(data.email)) {
-      const confirmationSubject = 'Confirmación - Palmera de los Remeros';
-      const confirmationBody = `
+    return createSuccessResponse('Mensaje enviado correctamente');
+    
+  } catch (error) {
+    console.error('Error en doPost:', error);
+    return createErrorResponse(error.message);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
+ * Maneja solicitudes OPTIONS para CORS
+ */
+function doOptions() {
+  return ContentService.createTextOutput("")
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    .setHeader('Access-Control-Max-Age', '86400');
+}
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function sendConfirmationEmail(data, timestamp) {
+  const confirmationSubject = 'Confirmación - Palmera de los Remeros';
+  const confirmationBody = `
 Hola ${data.nombre},
 
 ¡Gracias por tu interés en Palmera de los Remeros!
@@ -82,7 +213,7 @@ Datos de tu consulta:
 - Nombre: ${data.nombre} ${data.apellido}
 - Email: ${data.email}
 - Teléfono: ${data.telefono}
-- Fecha: ${timestamp.toLocaleDateString('es-AR')}
+- Fecha: ${Utilities.formatDate(timestamp, "America/Argentina/Buenos_Aires", "dd/MM/yyyy HH:mm:ss")}
 
 ¡Esperamos poder acompañarte en esta nueva etapa!
 
@@ -93,22 +224,23 @@ Grupo Portland
 ---
 Este es un email automático, por favor no respondas a esta dirección.
 Para consultas, contactanos en ventas@grupoportland.com
-      `.trim();
-      
-      try {
-        MailApp.sendEmail({
-          to: data.email,
-          subject: confirmationSubject,
-          body: confirmationBody
-        });
-      } catch (emailError) {
-        console.log('Error enviando email de confirmación:', emailError);
-      }
-    }
-    
-    // Enviar notificación al equipo de ventas
-    const salesNotificationSubject = `Nueva consulta - ${data.nombre} ${data.apellido} - Palmera Remeros`;
-    const salesNotificationBody = `
+  `.trim();
+  
+  try {
+    MailApp.sendEmail({
+      to: data.email,
+      subject: confirmationSubject,
+      body: confirmationBody
+    });
+  } catch (emailError) {
+    console.error('Error enviando email de confirmación:', emailError);
+    throw emailError;
+  }
+}
+
+function sendTeamNotification(data, timestamp, spreadsheetUrl) {
+  const salesNotificationSubject = `Nueva consulta - ${data.nombre} ${data.apellido} - Palmera Remeros`;
+  const salesNotificationBody = `
 🏢 NUEVA CONSULTA - PALMERA DE LOS REMEROS
 
 📊 DATOS DEL LEAD:
@@ -116,9 +248,9 @@ Para consultas, contactanos en ventas@grupoportland.com
 👤 Nombre: ${data.nombre} ${data.apellido}
 📧 Email: ${data.email}
 📱 Teléfono: ${data.telefono}
-📝 Comentario: ${data.comentario || 'Sin comentarios'}
+📝 Mensaje: ${data.comentario || 'Sin mensaje'}
 🌐 Origen: ${data.utmSource || 'Directo'}
-📅 Fecha: ${timestamp.toLocaleDateString('es-AR')} a las ${timestamp.toLocaleTimeString('es-AR')}
+📅 Fecha: ${Utilities.formatDate(timestamp, "America/Argentina/Buenos_Aires", "dd/MM/yyyy HH:mm:ss")}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -128,185 +260,124 @@ Para consultas, contactanos en ventas@grupoportland.com
 3. Agendar visita al showroom si corresponde
 4. Registrar seguimiento en CRM
 
-🔗 Ver hoja de cálculo: ${spreadsheet.getUrl()}
+🔗 Ver hoja de cálculo: ${spreadsheetUrl}
 
 ---
 Sistema automático Palmera de los Remeros
-    `.trim();
-    
-    try {
-      MailApp.sendEmail({
-        to: 'ventas@grupoportland.com',
-        subject: salesNotificationSubject,
-        body: salesNotificationBody
-      });
-      
-      // CC a otros miembros del equipo si es necesario
-      const ccEmails = [
-        'comercial@grupoportland.com',
-        'marketing@grupoportland.com'
-      ];
-      
-      ccEmails.forEach(email => {
-        try {
-          MailApp.sendEmail({
-            to: email,
-            subject: salesNotificationSubject,
-            body: salesNotificationBody
-          });
-        } catch (ccError) {
-          console.log(`Error enviando CC a ${email}:`, ccError);
-        }
-      });
-      
-    } catch (notificationError) {
-      console.log('Error enviando notificación:', notificationError);
-    }
-    
-    // Respuesta exitosa
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        message: 'Consulta recibida correctamente',
-        timestamp: timestamp.getTime()
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    console.error('Error en doPost:', error);
-    
-    // Respuesta de error
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: 'Error interno del servidor',
-        details: error.toString()
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
+  `.trim();
+  
+  try {
+    MailApp.sendEmail({
+      to: 'ventas@grupoportland.com',
+      subject: salesNotificationSubject,
+      body: salesNotificationBody
+    });
+  } catch (emailError) {
+    console.error('Error enviando notificación al equipo:', emailError);
+    throw emailError;
   }
 }
 
-/**
- * Función para manejar solicitudes GET (testing)
- */
-function doGet(e) {
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      status: 'OK',
-      message: 'Formulario Palmera de los Remeros funcionando correctamente',
-      timestamp: new Date().getTime()
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-/**
- * Validar formato de email
- */
-function isValidEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-/**
- * Función para test manual (opcional)
- */
-function testFormSubmission() {
+// Función de prueba
+function testScript() {
   const testData = {
-    postData: {
-      contents: JSON.stringify({
-        nombre: 'Juan',
-        apellido: 'Pérez',
-        email: 'juan.perez@example.com',
-        telefono: '+54 11 1234-5678',
-        comentario: 'Estoy interesado en una unidad de 3 ambientes',
-        utmSource: 'Test'
-      })
+    parameter: {
+      nombre: "Juan",
+      apellido: "Pérez",
+      email: "juan@test.com",
+      telefono: "11-1234-5678",
+      comentario: "Prueba desde script",
+      utmSource: "test",
+      userAgent: "Test Browser"
     }
   };
   
-  const result = doPost(testData);
-  console.log('Test result:', result.getContent());
+  const response = doPost(testData);
+  console.log(response.getContent());
 }
 
-/**
- * Configurar triggers automáticos (ejecutar una vez)
- */
+// Configurar triggers automáticos
 function setupTriggers() {
   // Eliminar triggers existentes
   const triggers = ScriptApp.getProjectTriggers();
-  triggers.forEach(trigger => {
-    if (trigger.getHandlerFunction() === 'dailyReport') {
-      ScriptApp.deleteTrigger(trigger);
-    }
-  });
+  triggers.forEach(trigger => ScriptApp.deleteTrigger(trigger));
   
   // Crear trigger para reporte diario
   ScriptApp.newTrigger('dailyReport')
     .timeBased()
     .everyDays(1)
-    .atHour(9) // 9 AM
+    .atHour(9)
     .create();
 }
 
-/**
- * Reporte diario automático
- */
+// Reporte diario de leads
 function dailyReport() {
-  try {
-    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = spreadsheet.getSheetByName('Leads Palmera Remeros');
-    
-    if (!sheet || sheet.getLastRow() <= 1) {
-      return; // No hay datos
-    }
-    
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    const data = sheet.getDataRange().getValues();
-    const yesterdayLeads = data.filter(row => {
-      const timestamp = new Date(row[0]);
-      return timestamp.toDateString() === yesterday.toDateString();
-    });
-    
-    if (yesterdayLeads.length === 0) {
-      return; // No hay leads de ayer
-    }
-    
-    const reportSubject = `📊 Reporte Diario - Palmera Remeros (${yesterday.toLocaleDateString('es-AR')})`;
-    const reportBody = `
-📈 REPORTE DIARIO - PALMERA DE LOS REMEROS
-${yesterday.toLocaleDateString('es-AR')}
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getActiveSheet();
+  const lastRow = sheet.getLastRow();
+  
+  if (lastRow <= 1) return; // Solo headers
+  
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const data = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+  const yesterdayLeads = data.filter(row => {
+    const rowDate = new Date(row[0]);
+    return rowDate.toDateString() === yesterday.toDateString();
+  });
+  
+  if (yesterdayLeads.length === 0) return;
+  
+  const reportSubject = `Reporte diario de leads - Palmera Remeros (${Utilities.formatDate(yesterday, "America/Argentina/Buenos_Aires", "dd/MM/yyyy")})`;
+  const reportBody = `
+📊 REPORTE DIARIO DE LEADS - PALMERA DE LOS REMEROS
 
-🎯 RESUMEN:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Total de leads: ${yesterdayLeads.length}
-• Leads con teléfono: ${yesterdayLeads.filter(row => row[4]).length}
-• Leads con comentarios: ${yesterdayLeads.filter(row => row[5]).length}
+Fecha: ${Utilities.formatDate(yesterday, "America/Argentina/Buenos_Aires", "dd/MM/yyyy")}
+Total de leads: ${yesterdayLeads.length}
 
-📋 DETALLE DE LEADS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${yesterdayLeads.map((row, index) => `
-${index + 1}. ${row[1]} ${row[2]}
-   📧 ${row[3]}
-   📱 ${row[4] || 'Sin teléfono'}
-   🌐 ${row[6] || 'Directo'}
-   💬 ${row[5] || 'Sin comentarios'}
-`).join('')}
+DETALLE DE LEADS:
+${yesterdayLeads.map((lead, index) => `
+${index + 1}. ${lead[1]} ${lead[2]}
+   📧 ${lead[3]}
+   📱 ${lead[4]}
+   🌐 Origen: ${lead[6] || 'Directo'}
+`).join('\n')}
 
-🔗 Ver hoja completa: ${spreadsheet.getUrl()}
+Ver todos los leads: ${ss.getUrl()}
 
 ---
-Reporte automático generado a las ${new Date().toLocaleTimeString('es-AR')}
-    `.trim();
-    
+Reporte automático - Palmera de los Remeros
+  `.trim();
+  
+  try {
     MailApp.sendEmail({
       to: 'ventas@grupoportland.com',
       subject: reportSubject,
       body: reportBody
     });
-    
   } catch (error) {
-    console.error('Error en reporte diario:', error);
+    console.error('Error enviando reporte diario:', error);
   }
+}
+
+function createSuccessResponse(message) {
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: true,
+      message: message,
+      timestamp: new Date().toISOString()
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function createErrorResponse(message) {
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: false,
+      error: message,
+      timestamp: new Date().toISOString()
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
 } 

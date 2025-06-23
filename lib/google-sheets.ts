@@ -1,45 +1,54 @@
 import { ContactFormData } from '@/types/forms';
+import { getUTMSource } from './utils';
 
-export async function submitToGoogleSheets(data: ContactFormData): Promise<boolean> {
+const SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
+
+export async function submitToGoogleSheets(formData: ContactFormData): Promise<boolean> {
   try {
-    const scriptUrl = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
-    
-    if (!scriptUrl) {
+    if (!SCRIPT_URL) {
       console.error('Google Script URL not configured');
-      return false;
+      throw new Error('Error de configuración del formulario');
     }
 
-    const response = await fetch(scriptUrl, {
+    // Format phone number to remove spaces and special characters
+    const formattedData = {
+      ...formData,
+      telefono: formData.telefono.replace(/\s+/g, '').replace(/-/g, ''),
+    };
+
+    // Create FormData for proper form submission
+    const data = new FormData();
+    
+    // Add each field individually
+    Object.entries(formattedData).forEach(([key, value]) => {
+      if (value) data.append(key, value);
+    });
+    
+    // Add tracking data
+    data.append('utmSource', getUTMSource());
+    data.append('userAgent', navigator.userAgent);
+
+    const response = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...data,
-        utmSource: data.utmSource || 'Directo',
-        timestamp: new Date().toISOString(),
-      }),
+      mode: 'cors',
+      body: data,
+      // Let the browser set the appropriate headers for FormData
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error('Error en la respuesta del servidor');
     }
 
     const result = await response.json();
-    return result.success === true;
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Error al procesar el formulario');
+    }
+
+    return true;
+
   } catch (error) {
-    console.error('Error submitting to Google Sheets:', error);
-    return false;
+    console.error('Error submitting form:', error);
+    throw error; // Re-throw to handle in the component
   }
 }
-
-// Mock function for development
-export async function submitToGoogleSheetsMock(data: ContactFormData): Promise<boolean> {
-  console.log('Mock form submission:', data);
-  
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Simulate success (you can change this to false to test error handling)
-  return true;
-} 

@@ -43,3 +43,6 @@ next-env.d.ts
 # .gitignore
 .env.local
 .env*.local
+
+# Google Sheets credentials
+google-credentials.json

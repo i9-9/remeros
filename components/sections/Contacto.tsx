@@ -4,15 +4,24 @@ import React from 'react';
 import { useState, useRef } from 'react'
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import { motion, useInView, Variants } from 'framer-motion';
+import { submitToGoogleSheets } from '@/lib/google-sheets';
+import { ContactFormData, contactFormSchema } from '@/types/forms';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function Contacto() {
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    telefono: '',
-    comentario: ''
-  })
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema)
+  });
 
   // Ref para detectar cuando la sección entra en el viewport
   const formRef = useRef(null)
@@ -21,17 +30,27 @@ export default function Contacto() {
     amount: 0.2 // Se activa cuando el 20% de la sección es visible
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+  const onSubmit = async (data: ContactFormData) => {
+    setIsSubmitting(true);
+    setSubmitSuccess(false);
+    setSubmitError(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted:', formData)
+    try {
+      const success = await submitToGoogleSheets(data);
+      
+      if (success) {
+        setSubmitSuccess(true);
+        setSubmitError(null);
+        reset();
+      } else {
+        setSubmitError('Error al enviar el formulario. Por favor, intenta nuevamente.');
+      }
+    } catch (error) {
+      console.error('Error al enviar formulario:', error);
+      setSubmitError('Error al enviar el formulario. Por favor, intenta nuevamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   // Define animation variants
@@ -75,74 +94,130 @@ export default function Contacto() {
 
           {/* Contact Form */}
           <div className="col-span-12 col-start-1 sm:col-span-6 sm:col-start-6" ref={formRef}>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:gap-x-[20px]">
-                <motion.input
-                  type="text"
-                  name="nombre"
-                  placeholder="Nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
-                  required
-                  variants={inputVariants}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
-                  custom={0}
-                />
-                <motion.input
-                  type="text"
-                  name="apellido"
-                  placeholder="Apellido"
-                  value={formData.apellido}
-                  onChange={handleChange}
-                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
-                  required
-                  variants={inputVariants}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
-                  custom={1}
-                />
-                <motion.input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
-                  required
-                  variants={inputVariants}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
-                  custom={2}
-                />
-                <motion.input
-                  type="tel"
-                  name="telefono"
-                  placeholder="Teléfono"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
-                  required
-                  variants={inputVariants}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
-                  custom={3}
-                />
-                <motion.textarea
-                  name="comentario"
-                  placeholder="Comentario"
-                  value={formData.comentario}
-                  onChange={handleChange}
-                  rows={4}
-                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors resize-none sm:col-span-2"
-                  variants={inputVariants}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
-                  custom={4}
-                />
+                <div className="relative">
+                  <motion.input
+                    type="text"
+                    {...register('nombre')}
+                    placeholder="Nombre"
+                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
+                    variants={inputVariants}
+                    initial="hidden"
+                    animate={isInView ? "visible" : "hidden"}
+                    custom={0}
+                    disabled={isSubmitting}
+                    aria-invalid={errors.nombre ? "true" : "false"}
+                  />
+                  {errors.nombre && (
+                    <motion.span 
+                      className="absolute -bottom-6 left-0 text-red-400 text-sm"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      {errors.nombre.message}
+                    </motion.span>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <motion.input
+                    type="text"
+                    {...register('apellido')}
+                    placeholder="Apellido"
+                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
+                    variants={inputVariants}
+                    initial="hidden"
+                    animate={isInView ? "visible" : "hidden"}
+                    custom={1}
+                    disabled={isSubmitting}
+                    aria-invalid={errors.apellido ? "true" : "false"}
+                  />
+                  {errors.apellido && (
+                    <motion.span 
+                      className="absolute -bottom-6 left-0 text-red-400 text-sm"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      {errors.apellido.message}
+                    </motion.span>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <motion.input
+                    type="email"
+                    {...register('email')}
+                    placeholder="Email"
+                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
+                    variants={inputVariants}
+                    initial="hidden"
+                    animate={isInView ? "visible" : "hidden"}
+                    custom={2}
+                    disabled={isSubmitting}
+                    aria-invalid={errors.email ? "true" : "false"}
+                  />
+                  {errors.email && (
+                    <motion.span 
+                      className="absolute -bottom-6 left-0 text-red-400 text-sm"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      {errors.email.message}
+                    </motion.span>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <motion.input
+                    type="tel"
+                    {...register('telefono')}
+                    placeholder="Teléfono"
+                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
+                    variants={inputVariants}
+                    initial="hidden"
+                    animate={isInView ? "visible" : "hidden"}
+                    custom={3}
+                    disabled={isSubmitting}
+                    aria-invalid={errors.telefono ? "true" : "false"}
+                  />
+                  {errors.telefono && (
+                    <motion.span 
+                      className="absolute -bottom-6 left-0 text-red-400 text-sm"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      {errors.telefono.message}
+                    </motion.span>
+                  )}
+                </div>
+
+                <div className="relative sm:col-span-2">
+                  <motion.textarea
+                    {...register('comentario')}
+                    placeholder="Comentario"
+                    rows={4}
+                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors resize-none"
+                    variants={inputVariants}
+                    initial="hidden"
+                    animate={isInView ? "visible" : "hidden"}
+                    custom={4}
+                    disabled={isSubmitting}
+                    aria-invalid={errors.comentario ? "true" : "false"}
+                  />
+                  {errors.comentario && (
+                    <motion.span 
+                      className="absolute -bottom-6 left-0 text-red-400 text-sm"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      {errors.comentario.message}
+                    </motion.span>
+                  )}
+                </div>
+
                 <motion.div
-                  className="flex flex-col sm:flex-row sm:justify-end sm:col-span-2"
+                  className="flex flex-col sm:flex-row sm:justify-end sm:col-span-2 gap-4 mt-8"
                   variants={inputVariants}
                   initial="hidden"
                   animate={isInView ? "visible" : "hidden"}
@@ -150,11 +225,32 @@ export default function Contacto() {
                 >
                   <button
                     type="submit"
-                    className="w-full sm:w-auto bg-primary-dark hover:bg-primary-dark/90 text-white px-12 py-4 font-montreal-medium text-lg transition-colors rounded-full"
+                    className="w-full sm:w-auto bg-primary-dark hover:bg-primary-dark/90 text-white px-12 py-4 font-montreal-medium text-lg transition-colors rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isSubmitting}
                   >
-                    Enviar
+                    {isSubmitting ? 'Enviando...' : 'Enviar'}
                   </button>
                 </motion.div>
+
+                {submitSuccess && (
+                  <motion.div
+                    className="sm:col-span-2 p-4 bg-green-500 text-white rounded-lg font-montreal-medium"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    ¡Gracias por tu mensaje! Te contactaremos pronto.
+                  </motion.div>
+                )}
+
+                {submitError && (
+                  <motion.div
+                    className="sm:col-span-2 p-4 bg-red-500 text-white rounded-lg font-montreal-medium"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    {submitError}
+                  </motion.div>
+                )}
               </div>
             </form>
           </div>
