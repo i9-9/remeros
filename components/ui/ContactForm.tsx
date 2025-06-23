@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { contactFormSchema } from '@/lib/validations';
-import { submitToGoogleSheetsMock } from '@/lib/google-sheets';
+import { submitToGoogleSheets } from '@/lib/google-sheets';
 import { getUTMSource } from '@/lib/utils';
 import type { ContactFormData } from '@/types/forms';
 
@@ -28,10 +28,11 @@ export default function ContactForm() {
     try {
       const formData = {
         ...data,
-        utmSource: getUTMSource()
+        utmSource: getUTMSource(),
+        userAgent: navigator.userAgent,
       };
 
-      const success = await submitToGoogleSheetsMock(formData);
+      const success = await submitToGoogleSheets(formData);
 
       if (success) {
         setSubmitStatus('success');

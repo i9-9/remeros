@@ -1,13 +1,27 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AnimatedTitle from '@/components/ui/AnimatedTitle'
 
 export default function Entorno() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detectar si es mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <section
       id="entorno"
-      className="relative w-full h-[50vh] min-h-[300px] flex items-end bg-no-repeat bg-fixed"
+      className={`relative w-full h-[50vh] min-h-[300px] flex items-end bg-no-repeat ${!isMobile ? 'bg-fixed' : 'bg-scroll'}`}
       style={{
         backgroundImage: "url('/images/Remeros drone-45.jpg')",
         backgroundSize: "cover",
