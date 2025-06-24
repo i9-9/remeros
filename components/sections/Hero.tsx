@@ -4,14 +4,32 @@ import Image from 'next/image';
 import Navbar from '@/components/ui/Navbar';
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export default function Hero() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <section className="relative h-screen">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 01_AEREA_FI (2).jpg"
+          src={isMobile ? "/images/hero_mobile.jpg" : "/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 01_AEREA_FI (2).jpg"}
           alt="Palmera de los Remeros - Vista aérea"
           fill
           className="object-cover"
@@ -20,16 +38,16 @@ export default function Hero() {
         <div className="absolute inset-0 "></div>
       </div>
 
-      {/* Navigation */}
+      {/* Navigation */}  
       <Navbar />
 
       {/* Hero Content */}
       <div className="relative z-0 h-screen">
         {/* Mobile: bloque centrado fuera de la grilla */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center w-full px-4 text-center block md:hidden z-10 mb-24">
-          <div className="w-full max-w-md mx-auto flex flex-col items-center gap-4 text-center">
+        <div className="absolute inset-0 flex flex-col items-center w-full px-6 text-center block md:hidden z-10 pt-16">
+          <div className="w-[300px] flex flex-col items-center gap-6">
             <AnimatedTitle 
-              className="font-gt-extended font-light text-4xl leading-tight text-primary-navy w-full bg-white/20 backdrop-blur rounded-xl text-center"
+              className="font-gt-extended font-light text-[42px] leading-[1.15] text-primary-navy text-center w-full"
               delay={0.2}
               direction="up"
             >
@@ -42,12 +60,12 @@ export default function Hero() {
               delay={0.4}
               direction="up"
             >
-              <Link href="#ubicacion" scroll={true}>
-                <span className="inline-flex items-center justify-center w-full px-4 py-2 text-primary-navy font-montreal-medium text-lg hover:bg-white hover:text-primary-dark transition-all duration-300 rounded-full bg-white/60 backdrop-blur border border-primary-navy">
-                QUIERO SABER MÁS
-                <svg className="ml-2 w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+              <Link href="#ubicacion" scroll={true} className="block w-full">
+                <span className="inline-flex items-center justify-center w-full px-4 py-2 border border-primary-navy text-primary-navy font-montreal-medium text-lg hover:bg-white hover:text-primary-dark transition-all duration-300 rounded-full bg-white/60 backdrop-blur">
+                  QUIERO SABER MÁS
+                  <svg className="ml-2 w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </span>
               </Link>
             </AnimatedTitle>

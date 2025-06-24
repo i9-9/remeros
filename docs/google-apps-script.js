@@ -196,8 +196,8 @@ function isValidEmail(email) {
 }
 
 function sendConfirmationEmail(data, timestamp) {
-  const confirmationSubject = 'Confirmación - Palmera de los Remeros';
-  const confirmationBody = `
+      const confirmationSubject = 'Confirmación - Palmera de los Remeros';
+      const confirmationBody = `
 Hola ${data.nombre},
 
 ¡Gracias por tu interés en Palmera de los Remeros!
@@ -224,23 +224,23 @@ Grupo Portland
 ---
 Este es un email automático, por favor no respondas a esta dirección.
 Para consultas, contactanos en ventas@grupoportland.com
-  `.trim();
-  
-  try {
-    MailApp.sendEmail({
-      to: data.email,
-      subject: confirmationSubject,
-      body: confirmationBody
-    });
-  } catch (emailError) {
+      `.trim();
+      
+      try {
+        MailApp.sendEmail({
+          to: data.email,
+          subject: confirmationSubject,
+          body: confirmationBody
+        });
+      } catch (emailError) {
     console.error('Error enviando email de confirmación:', emailError);
     throw emailError;
-  }
-}
-
+      }
+    }
+    
 function sendTeamNotification(data, timestamp, spreadsheetUrl) {
-  const salesNotificationSubject = `Nueva consulta - ${data.nombre} ${data.apellido} - Palmera Remeros`;
-  const salesNotificationBody = `
+    const salesNotificationSubject = `Nueva consulta - ${data.nombre} ${data.apellido} - Palmera Remeros`;
+    const salesNotificationBody = `
 🏢 NUEVA CONSULTA - PALMERA DE LOS REMEROS
 
 📊 DATOS DEL LEAD:
@@ -264,14 +264,14 @@ function sendTeamNotification(data, timestamp, spreadsheetUrl) {
 
 ---
 Sistema automático Palmera de los Remeros
-  `.trim();
-  
-  try {
-    MailApp.sendEmail({
-      to: 'ventas@grupoportland.com',
-      subject: salesNotificationSubject,
-      body: salesNotificationBody
-    });
+    `.trim();
+    
+    try {
+      MailApp.sendEmail({
+        to: 'ventas@grupoportland.com',
+        subject: salesNotificationSubject,
+        body: salesNotificationBody
+      });
   } catch (emailError) {
     console.error('Error enviando notificación al equipo:', emailError);
     throw emailError;
@@ -320,18 +320,18 @@ function dailyReport() {
   
   const today = new Date();
   const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  
+    yesterday.setDate(yesterday.getDate() - 1);
+    
   const data = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
-  const yesterdayLeads = data.filter(row => {
+    const yesterdayLeads = data.filter(row => {
     const rowDate = new Date(row[0]);
     return rowDate.toDateString() === yesterday.toDateString();
-  });
-  
+    });
+    
   if (yesterdayLeads.length === 0) return;
-  
+    
   const reportSubject = `Reporte diario de leads - Palmera Remeros (${Utilities.formatDate(yesterday, "America/Argentina/Buenos_Aires", "dd/MM/yyyy")})`;
-  const reportBody = `
+    const reportBody = `
 📊 REPORTE DIARIO DE LEADS - PALMERA DE LOS REMEROS
 
 Fecha: ${Utilities.formatDate(yesterday, "America/Argentina/Buenos_Aires", "dd/MM/yyyy")}
@@ -349,8 +349,8 @@ Ver todos los leads: ${ss.getUrl()}
 
 ---
 Reporte automático - Palmera de los Remeros
-  `.trim();
-  
+    `.trim();
+    
   try {
     MailApp.sendEmail({
       to: 'ventas@grupoportland.com',

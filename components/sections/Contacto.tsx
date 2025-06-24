@@ -97,15 +97,15 @@ export default function Contacto() {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:gap-x-[20px]">
                 <div className="relative">
-                  <motion.input
-                    type="text"
+                <motion.input
+                  type="text"
                     {...register('nombre')}
-                    placeholder="Nombre"
-                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
-                    variants={inputVariants}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                    custom={0}
+                  placeholder="Nombre"
+                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={0}
                     disabled={isSubmitting}
                     aria-invalid={errors.nombre ? "true" : "false"}
                   />
@@ -121,15 +121,15 @@ export default function Contacto() {
                 </div>
 
                 <div className="relative">
-                  <motion.input
-                    type="text"
+                <motion.input
+                  type="text"
                     {...register('apellido')}
-                    placeholder="Apellido"
-                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
-                    variants={inputVariants}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                    custom={1}
+                  placeholder="Apellido"
+                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={1}
                     disabled={isSubmitting}
                     aria-invalid={errors.apellido ? "true" : "false"}
                   />
@@ -145,15 +145,15 @@ export default function Contacto() {
                 </div>
 
                 <div className="relative">
-                  <motion.input
-                    type="email"
+                <motion.input
+                  type="email"
                     {...register('email')}
-                    placeholder="Email"
-                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
-                    variants={inputVariants}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                    custom={2}
+                  placeholder="Email"
+                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={2}
                     disabled={isSubmitting}
                     aria-invalid={errors.email ? "true" : "false"}
                   />
@@ -169,15 +169,15 @@ export default function Contacto() {
                 </div>
 
                 <div className="relative">
-                  <motion.input
-                    type="tel"
+                <motion.input
+                  type="tel"
                     {...register('telefono')}
-                    placeholder="Teléfono"
-                    className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
-                    variants={inputVariants}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                    custom={3}
+                  placeholder="Teléfono"
+                  className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={3}
                     disabled={isSubmitting}
                     aria-invalid={errors.telefono ? "true" : "false"}
                   />
@@ -193,15 +193,15 @@ export default function Contacto() {
                 </div>
 
                 <div className="relative sm:col-span-2">
-                  <motion.textarea
+                <motion.textarea
                     {...register('comentario')}
-                    placeholder="Comentario"
-                    rows={4}
+                  placeholder="Comentario"
+                  rows={4}
                     className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors resize-none"
-                    variants={inputVariants}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                    custom={4}
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={4}
                     disabled={isSubmitting}
                     aria-invalid={errors.comentario ? "true" : "false"}
                   />

@@ -194,7 +194,7 @@ html {
   to {
     transform: translateX(0);
   }
-}
+} 
 
 /* Fuerza que solo uno maneje el scroll */
 html {
