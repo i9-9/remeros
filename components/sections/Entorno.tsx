@@ -7,6 +7,7 @@ import { useInView } from 'react-intersection-observer';
 interface ParallaxState {
   scrollY: number;
   isSupported: boolean;
+  useFixed: boolean;
 }
 
 export default function Entorno() {
@@ -14,7 +15,8 @@ export default function Entorno() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [parallaxState, setParallaxState] = useState<ParallaxState>({
     scrollY: 0,
-    isSupported: true
+    isSupported: true,
+    useFixed: false
   });
   
   // Intersection observer to optimize performance
@@ -30,10 +32,12 @@ export default function Entorno() {
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isDesktop = window.innerWidth >= 1024;
       
       setParallaxState(prev => ({
         ...prev,
-        isSupported: !isMobileDevice && !prefersReducedMotion
+        isSupported: !isMobileDevice && !prefersReducedMotion,
+        useFixed: isDesktop && !prefersReducedMotion // Use fixed background on desktop
       }));
     };
 
@@ -45,7 +49,7 @@ export default function Entorno() {
 
   // Optimized scroll handler with RAF
   const handleScroll = useCallback(() => {
-    if (!inView || !parallaxState.isSupported || !sectionRef.current) return;
+    if (!inView || !parallaxState.isSupported || parallaxState.useFixed || !sectionRef.current) return;
 
     requestAnimationFrame(() => {
       const scrolled = window.scrollY;
@@ -60,15 +64,15 @@ export default function Entorno() {
         scrollY: relativeScroll * 0.5 // Adjust speed factor here
       }));
     });
-  }, [inView, parallaxState.isSupported]);
+  }, [inView, parallaxState.isSupported, parallaxState.useFixed]);
 
   // Scroll event listener with cleanup
   useEffect(() => {
-    if (!parallaxState.isSupported) return;
+    if (!parallaxState.isSupported || parallaxState.useFixed) return;
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll, parallaxState.isSupported]);
+  }, [handleScroll, parallaxState.isSupported, parallaxState.useFixed]);
 
   // Set multiple refs
   const setRefs = useCallback(
@@ -83,20 +87,22 @@ export default function Entorno() {
     <section
       ref={setRefs}
       id="entorno"
-      className="relative w-full h-[50vh] min-h-[300px] flex items-end overflow-hidden"
+      className={`relative w-full h-[50vh] min-h-[300px] flex items-end overflow-hidden`}
       style={{ isolation: 'isolate' }}
     >
       {/* Background with parallax effect */}
       <div 
-        className={`absolute inset-0 w-full h-full bg-cover bg-center will-change-transform backface-hidden`}
+        className={`absolute inset-0 w-full h-full bg-cover bg-center will-change-transform backface-hidden
+          ${parallaxState.useFixed ? 'bg-fixed' : ''}`}
         style={{
           backgroundImage: "url('/images/Remeros drone-45.jpg')",
-          transform: parallaxState.isSupported 
+          transform: (!parallaxState.useFixed && parallaxState.isSupported)
             ? `translate3d(0, ${parallaxState.scrollY}px, 0)`
             : 'none',
-          transition: !parallaxState.isSupported ? 'transform 0.1s ease-out' : 'none',
-          willChange: parallaxState.isSupported ? 'transform' : 'auto',
-          transformStyle: 'preserve-3d'
+          transition: (!parallaxState.useFixed && !parallaxState.isSupported) ? 'transform 0.1s ease-out' : 'none',
+          willChange: (!parallaxState.useFixed && parallaxState.isSupported) ? 'transform' : 'auto',
+          transformStyle: parallaxState.useFixed ? 'flat' : 'preserve-3d',
+          backgroundAttachment: parallaxState.useFixed ? 'fixed' : 'scroll'
         }}
       />
 

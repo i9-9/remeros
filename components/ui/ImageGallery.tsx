@@ -107,7 +107,7 @@ export default function ImageGallery({ images, className = '' }: ImageGalleryPro
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
               index === currentIndex
                 ? 'bg-primary-sage scale-125'
-                : 'bg-primary-cream hover:bg-primary-sage/50'
+                : 'bg-primary-dark/20 hover:bg-primary-sage/50'
             }`}
             aria-label={`Ir a imagen ${index + 1}`}
           />

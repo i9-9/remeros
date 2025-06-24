@@ -20,7 +20,7 @@ export default function Amenities() {
         <div>
           <div className="col-12 relative h-[50vh] min-h-[300px]">
             <Image
-              src="/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 02_PEATONAL_FI (2).jpg"
+              src="/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 02_PEATONAL_FI (2).jpg"
               alt="Palmera de los Remeros - Vista peatonal"
               fill
               className="object-cover"

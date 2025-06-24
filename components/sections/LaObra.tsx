@@ -1,10 +1,27 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import VideoPlayer from '@/components/ui/VideoPlayer';
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 
 export default function LaObra() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <section id="la-obra" className="py-10 bg-primary-light">
       <div className="container-custom">
@@ -33,7 +50,7 @@ export default function LaObra() {
         {/* Video Player */}
         <div className="max-w-5xl mx-auto">
           <VideoPlayer 
-            videoUrl="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            videoUrl={isMobile ? "/videos/vid_mobile.mp4" : "/videos/vid_desktop.mp4"}
             thumbnailUrl="/images/2025-02-20 Instalación DRI A_C.jpg"
             className="h-[400px] md:h-[500px] lg:h-[600px]"
           />

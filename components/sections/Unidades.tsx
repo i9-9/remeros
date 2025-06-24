@@ -1,19 +1,20 @@
 'use client';
 
-import { useState } from 'react'
-import Image from 'next/image'
 import AnimatedTitle from '@/components/ui/AnimatedTitle'
+import ImageGallery from '@/components/ui/ImageGallery'
 
 export default function Unidades() {
-  const [currentImage, setCurrentImage] = useState(0)
-  
-  // Remove or comment out the unused variable 'images'
-  // const images = [
-  //   '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 07_LIVING_FI (1).jpg',
-  //   '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 02_PEATONAL_FI (2).jpg',
-  //   '/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 01_AEREA_FI (2).jpg',
-  //   // Add more images as needed
-  // ]
+  const images = [
+    '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 08_DORMITORIO_FI (1).jpg',
+    '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 06_PILETA_FI.jpg',
+    '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 06_PILETA_FI (2).jpg',
+    '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 05_SUM_ER01 (1).jpg',
+    '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 04_RETAIL_FI (2).jpg',
+    '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 03_ZOOM BALCON_FI (1).jpg',
+    '/images/gallery/Untitled.jpg',
+    '/images/gallery/Untitled-1.jpg',
+    '/images/gallery/Untitled-2.jpg',
+  ]
 
   return (
     <section id="unidades" className="bg-primary-cream py-20">
@@ -42,35 +43,9 @@ export default function Unidades() {
             </div>
           </div>
 
-          {/* Main Image */}
-          <div className="col-12 mb-8">
-            <div className="relative h-[70vh] rounded-lg overflow-hidden">
-              <Image
-                src="/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 07_LIVING_FI (1).jpg"
-                alt="Interior de unidad - Living"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          </div>
-
-          {/* Gallery Navigation Dots */}
-          <div className="col-12 flex justify-center">
-            <div className="flex space-x-3">
-              {[...Array(8)].map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImage(index)}
-                  className={`w-4 h-4 rounded-full transition-colors ${
-                    index === currentImage 
-                      ? 'bg-primary-dark' 
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Ver imagen ${index + 1}`}
-                />
-              ))}
-            </div>
+          {/* Gallery */}
+          <div className="col-12">
+            <ImageGallery images={images} />
           </div>
         </div>
       </div>

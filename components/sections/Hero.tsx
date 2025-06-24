@@ -29,7 +29,7 @@ export default function Hero() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src={isMobile ? "/images/hero_mobile.jpg" : "/images/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 01_AEREA_FI (2).jpg"}
+          src={isMobile ? "/images/hero_mobile.jpg" : "/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 01_AEREA_FI (2).jpg"}
           alt="Palmera de los Remeros - Vista aérea"
           fill
           className="object-cover"
