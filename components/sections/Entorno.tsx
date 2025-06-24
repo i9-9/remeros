@@ -95,7 +95,7 @@ export default function Entorno() {
         className={`absolute inset-0 w-full h-full bg-cover bg-center will-change-transform backface-hidden
           ${parallaxState.useFixed ? 'bg-fixed' : ''}`}
         style={{
-          backgroundImage: "url('/images/Remeros drone-45.jpg')",
+          backgroundImage: "url('/images/parallax.jpg')",
           transform: (!parallaxState.useFixed && parallaxState.isSupported)
             ? `translate3d(0, ${parallaxState.scrollY}px, 0)`
             : 'none',

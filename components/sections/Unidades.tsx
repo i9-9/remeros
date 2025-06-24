@@ -6,7 +6,6 @@ import ImageGallery from '@/components/ui/ImageGallery'
 export default function Unidades() {
   const images = [
     '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 08_DORMITORIO_FI (1).jpg',
-    '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 06_PILETA_FI.jpg',
     '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 06_PILETA_FI (2).jpg',
     '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 05_SUM_ER01 (1).jpg',
     '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 04_RETAIL_FI (2).jpg',

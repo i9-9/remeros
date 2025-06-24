@@ -113,16 +113,6 @@ export default function ImageGallery({ images, className = '' }: ImageGalleryPro
           />
         ))}
       </div>
-
-      {/* Auto-play indicator */}
-      {isAutoPlaying && (
-        <div className="absolute bottom-4 left-4">
-          <div className="flex items-center space-x-2 bg-primary-navy/80 text-primary-white px-3 py-1 rounded-full text-xs">
-            <div className="w-2 h-2 bg-primary-gold rounded-full animate-pulse"></div>
-            <span className="font-gt-america">Auto</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 } 
