@@ -36,10 +36,16 @@ export default function Unidades() {
               >
                 UNIDADES
               </AnimatedTitle>
-              <div className="hidden md:block w-1 h-16 bg-primary-dark mx-8"></div>
+              <AnimatedTitle
+                className="block md:mx-8"
+                delay={0.4}
+                direction="up"
+              >
+                <div className="h-1 w-16 md:h-16 md:w-1 bg-primary-dark"></div>
+              </AnimatedTitle>
               <AnimatedTitle 
                 className="max-w-2xl"
-                delay={0.4}
+                delay={0.6}
                 direction="up"
               >
                 <p className="font-montreal-medium text-xl text-primary-dark mb-0">

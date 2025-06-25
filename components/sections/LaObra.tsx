@@ -35,14 +35,28 @@ export default function LaObra() {
             >
               LA OBRA
             </AnimatedTitle>
-            <div className="w-1 h-16 bg-primary-cream mx-6 rotate-90 md:rotate-0"></div>
+            <AnimatedTitle
+              className="w-1 h-16 bg-primary-cream mx-6 rotate-90 md:rotate-0"
+              delay={0.4}
+              direction="up"
+            >
+              <div className="w-1 h-16 bg-primary-cream"></div>
+            </AnimatedTitle>
             <div className="flex flex-col items-center md:items-start">
-              <h3 className="font-montreal-medium text-2xl text-primary-cream mb-2">
+              <AnimatedTitle 
+                className="font-montreal-medium text-2xl text-primary-cream mb-2"
+                delay={0.6}
+                direction="up"
+              >
                 Mirá el avance de los trabajos en terreno
-              </h3>
-              <p className="font-montreal-light text-md text-primary-cream">
+              </AnimatedTitle>
+              <AnimatedTitle 
+                className="font-montreal-light text-md text-primary-cream"
+                delay={0.8}
+                direction="up"
+              >
                 Palmera de los Remeros ya está en camino.
-              </p>
+              </AnimatedTitle>
             </div>
           </div>
         </div>
