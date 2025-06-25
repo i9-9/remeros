@@ -48,18 +48,18 @@ export default function Proyecto() {
                     to={140}
                     duration={2.5}
                     delay={0.2}
-                    className="font-gt-expanded-regular text-3xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-[3rem] mb-2"
+                    className="font-gt-expanded-regular text-2xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-[3rem] mb-2"
                   />
-                  <div className="font-gt-expanded-regular text-sm tracking-wider">
+                  <div className="font-gt-expanded-regular text-xs md:text-sm tracking-wider">
                     UNIDADES<br />
                     FUNCIONALES
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="font-gt-expanded-regular text-3xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-[3rem] mb-2">
+                  <div className="font-gt-expanded-regular text-2xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-[3rem] mb-2">
                     2,3,4 & 5
                   </div>
-                  <div className="font-gt-expanded-regular text-sm tracking-wider">
+                  <div className="font-gt-expanded-regular text-xs md:text-sm tracking-wider">
                     AMBIENTES
                   </div>
                 </div>
@@ -68,9 +68,9 @@ export default function Proyecto() {
                     to={16000}
                     duration={3}
                     delay={0.4}
-                    className="font-gt-expanded-regular text-3xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-[3rem] mb-2"
+                    className="font-gt-expanded-regular text-2xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-[3rem] mb-2"
                   />
-                  <div className="font-gt-expanded-regular text-sm tracking-wider">
+                  <div className="font-gt-expanded-regular text-xs md:text-sm tracking-wider">
                     M2 DE CONSTRUCCIÓN
                   </div>
                 </div>
@@ -79,9 +79,9 @@ export default function Proyecto() {
                     to={1100}
                     duration={2.8}
                     delay={0.6}
-                    className="font-gt-expanded-regular text-3xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-[3rem] mb-2"
+                    className="font-gt-expanded-regular text-2xl sm:text-2xl md:text-4xl lg:text-4xl xl:text-5xl 2xl:text-[3rem] mb-2"
                   />
-                  <div className="font-gt-expanded-regular text-sm tracking-wider">
+                  <div className="font-gt-expanded-regular text-xs md:text-sm tracking-wider">
                     M2 DE ZÓCALO<br />
                     COMERCIAL
                   </div>

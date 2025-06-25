@@ -36,11 +36,11 @@ export default function LaObra() {
               LA OBRA
             </AnimatedTitle>
             <AnimatedTitle
-              className="w-1 h-16 bg-primary-cream mx-6 rotate-90 md:rotate-0"
+              className="block md:mx-8"
               delay={0.4}
               direction="up"
             >
-              <div className="w-1 h-16 bg-primary-cream"></div>
+              <div className="h-1 w-16 md:h-16 md:w-1 bg-primary-cream"></div>
             </AnimatedTitle>
             <div className="flex flex-col items-center md:items-start">
               <AnimatedTitle 
