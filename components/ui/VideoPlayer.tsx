@@ -2,18 +2,19 @@
 
 import React, { useState, useRef } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
+import { PlayIcon } from '@heroicons/react/24/solid';
 
 interface VideoPlayerProps {
-  videoUrl?: string;
-  thumbnailUrl?: string;
+  videoUrl: string;
+  thumbnailUrl: string;
   className?: string;
   isVertical?: boolean;
   showControls?: boolean;
 }
 
 export default function VideoPlayer({ 
-  videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-  thumbnailUrl = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+  videoUrl,
+  thumbnailUrl,
   className = '',
   isVertical = false,
   showControls = false
@@ -28,7 +29,7 @@ export default function VideoPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  const togglePlay = () => {
+  const handlePlayClick = () => {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
@@ -91,50 +92,55 @@ export default function VideoPlayer({
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  return (
-    <div 
-      className={`relative bg-black rounded-lg overflow-hidden shadow-2xl ${className}`}
-      onMouseEnter={() => showControls && setDisplayControls(true)}
-      onMouseLeave={() => showControls && setDisplayControls(isPlaying ? false : true)}
-    >
-      {/* Video Element */}
-      <video
-        ref={videoRef}
-        className={`w-full h-full ${isVertical ? 'object-contain' : 'object-cover'}`}
-        poster={thumbnailUrl}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        preload="metadata"
-        autoPlay
-        loop
-        muted
-      >
-        <source src={videoUrl} type="video/mp4" />
-        Tu navegador no soporta el elemento video.
-      </video>
+  const handleVideoEnd = () => {
+    setIsPlaying(false);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+    }
+  };
 
-      {/* Overlay para controles */}
+  return (
+    <div className={`relative overflow-hidden rounded-lg ${className}`}>
+      <div className={`relative w-full h-full ${isVertical ? 'flex justify-center' : ''}`}>
+        <video
+          ref={videoRef}
+          className={`${isVertical ? 'h-full w-auto max-w-none' : 'w-full h-full object-cover'}`}
+          poster={thumbnailUrl}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onEnded={handleVideoEnd}
+          playsInline
+          muted
+        >
+          <source src={videoUrl} type="video/mp4" />
+          Tu navegador no soporta el elemento de video.
+        </video>
+        {!isPlaying && (
+          <button
+            onClick={handlePlayClick}
+            className="absolute inset-0 w-full h-full flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors group"
+          >
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/80 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg 
+                className="w-8 h-8 md:w-10 md:h-10 text-primary-navy ml-1" 
+                fill="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </button>
+        )}
+      </div>
+
       {showControls && (
         <div 
           className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${
             displayControls ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          {/* Play button central (visible cuando está pausado) */}
-          {!isPlaying && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <button
-                onClick={togglePlay}
-                className="bg-primary-white/90 hover:bg-primary-white rounded-full p-6 transition-all duration-300 transform hover:scale-110 shadow-2xl"
-                aria-label="Reproducir video"
-              >
-                <Play className="w-12 h-12 text-primary-navy ml-1" />
-              </button>
-            </div>
-          )}
-
           {/* Controles inferiores */}
           <div className="absolute bottom-0 left-0 right-0 p-4 space-y-3">
             {/* Barra de progreso */}
@@ -154,7 +160,7 @@ export default function VideoPlayer({
               <div className="flex items-center space-x-4">
                 {/* Play/Pause */}
                 <button
-                  onClick={togglePlay}
+                  onClick={handlePlayClick}
                   className="text-white hover:text-primary-gold transition-colors p-1"
                   aria-label={isPlaying ? "Pausar" : "Reproducir"}
                 >
