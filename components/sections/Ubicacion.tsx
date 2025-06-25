@@ -20,7 +20,7 @@ export default function Ubicacion() {
               <div className="w-16 h-1 md:w-1 md:h-16 bg-primary-dark md:mx-6"></div>
               <div className="flex flex-col items-center md:items-start text-center md:text-left">
                 <h3 className="font-montreal-medium text-2xl text-primary-dark mb-2">
-                  Camino de los Remeros y Ruta 27
+                  Camino de los Remeros<br/> y Ruta 27
                 </h3>
                 <p className="font-montreal-light text-md text-primary-dark">
                   Próximo a Remeros Plaza, a 5 minutos del Centro comercial Nordelta y del Acceso Tigre (Panamericana).

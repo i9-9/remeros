@@ -53,6 +53,7 @@ export default function LaObra() {
             videoUrl={isMobile ? "/videos/vid_mobile.mp4" : "/videos/vid_desktop.mp4"}
             thumbnailUrl="/images/2025-02-20 Instalación DRI A_C.jpg"
             className="h-[400px] md:h-[500px] lg:h-[600px]"
+            isVertical={isMobile}
           />
         </div>
 

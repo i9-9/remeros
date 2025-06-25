@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+import { useInView } from 'react-intersection-observer';
 import AnimatedTitle from '@/components/ui/AnimatedTitle'
 import ImageGallery from '@/components/ui/ImageGallery'
 
@@ -14,6 +16,11 @@ export default function Unidades() {
     '/images/gallery/Untitled-1.jpg',
     '/images/gallery/Untitled-2.jpg',
   ]
+
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1
+  });
 
   return (
     <section id="unidades" className="bg-primary-cream py-20">
@@ -43,7 +50,12 @@ export default function Unidades() {
           </div>
 
           {/* Gallery */}
-          <div className="col-12">
+          <div 
+            ref={ref}
+            className={`col-12 transition-opacity duration-1000 ease-out ${
+              inView ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
             <ImageGallery images={images} />
           </div>
         </div>

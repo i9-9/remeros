@@ -7,16 +7,20 @@ interface VideoPlayerProps {
   videoUrl?: string;
   thumbnailUrl?: string;
   className?: string;
+  isVertical?: boolean;
+  showControls?: boolean;
 }
 
 export default function VideoPlayer({ 
   videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
   thumbnailUrl = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
-  className = '' 
+  className = '',
+  isVertical = false,
+  showControls = false
 }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [showControls, setShowControls] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const [displayControls, setDisplayControls] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -90,13 +94,13 @@ export default function VideoPlayer({
   return (
     <div 
       className={`relative bg-black rounded-lg overflow-hidden shadow-2xl ${className}`}
-      onMouseEnter={() => setShowControls(true)}
-      onMouseLeave={() => setShowControls(isPlaying ? false : true)}
+      onMouseEnter={() => showControls && setDisplayControls(true)}
+      onMouseLeave={() => showControls && setDisplayControls(isPlaying ? false : true)}
     >
       {/* Video Element */}
       <video
         ref={videoRef}
-        className="w-full h-full object-cover"
+        className={`w-full h-full ${isVertical ? 'object-contain' : 'object-cover'}`}
         poster={thumbnailUrl}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
@@ -112,96 +116,100 @@ export default function VideoPlayer({
       </video>
 
       {/* Overlay para controles */}
-      <div 
-        className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${
-          showControls ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        {/* Play button central (visible cuando está pausado) */}
-        {!isPlaying && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <button
-              onClick={togglePlay}
-              className="bg-primary-white/90 hover:bg-primary-white rounded-full p-6 transition-all duration-300 transform hover:scale-110 shadow-2xl"
-              aria-label="Reproducir video"
-            >
-              <Play className="w-12 h-12 text-primary-navy ml-1" />
-            </button>
-          </div>
-        )}
-
-        {/* Controles inferiores */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 space-y-3">
-          {/* Barra de progreso */}
-          <div
-            ref={progressBarRef}
-            className="w-full h-2 bg-white/30 rounded-full cursor-pointer"
-            onClick={handleProgressBarClick}
-          >
-            <div 
-              className="h-full bg-primary-gold rounded-full transition-all duration-200"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          {/* Controles */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              {/* Play/Pause */}
+      {showControls && (
+        <div 
+          className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${
+            displayControls ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          {/* Play button central (visible cuando está pausado) */}
+          {!isPlaying && (
+            <div className="absolute inset-0 flex items-center justify-center">
               <button
                 onClick={togglePlay}
-                className="text-white hover:text-primary-gold transition-colors p-1"
-                aria-label={isPlaying ? "Pausar" : "Reproducir"}
+                className="bg-primary-white/90 hover:bg-primary-white rounded-full p-6 transition-all duration-300 transform hover:scale-110 shadow-2xl"
+                aria-label="Reproducir video"
               >
-                {isPlaying ? (
-                  <Pause className="w-6 h-6" />
-                ) : (
-                  <Play className="w-6 h-6" />
-                )}
+                <Play className="w-12 h-12 text-primary-navy ml-1" />
               </button>
+            </div>
+          )}
 
-              {/* Volume */}
-              <button
-                onClick={toggleMute}
-                className="text-white hover:text-primary-gold transition-colors p-1"
-                aria-label={isMuted ? "Activar sonido" : "Silenciar"}
-              >
-                {isMuted ? (
-                  <VolumeX className="w-6 h-6" />
-                ) : (
-                  <Volume2 className="w-6 h-6" />
-                )}
-              </button>
-
-              {/* Time */}
-              <div className="text-white text-sm font-gt-america">
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </div>
+          {/* Controles inferiores */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 space-y-3">
+            {/* Barra de progreso */}
+            <div
+              ref={progressBarRef}
+              className="w-full h-2 bg-white/30 rounded-full cursor-pointer"
+              onClick={handleProgressBarClick}
+            >
+              <div 
+                className="h-full bg-primary-gold rounded-full transition-all duration-200"
+                style={{ width: `${progress}%` }}
+              />
             </div>
 
-            {/* Fullscreen */}
-            <button
-              onClick={toggleFullscreen}
-              className="text-white hover:text-primary-gold transition-colors p-1"
-              aria-label="Pantalla completa"
-            >
-              <Maximize className="w-6 h-6" />
-            </button>
+            {/* Controles */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                {/* Play/Pause */}
+                <button
+                  onClick={togglePlay}
+                  className="text-white hover:text-primary-gold transition-colors p-1"
+                  aria-label={isPlaying ? "Pausar" : "Reproducir"}
+                >
+                  {isPlaying ? (
+                    <Pause className="w-6 h-6" />
+                  ) : (
+                    <Play className="w-6 h-6" />
+                  )}
+                </button>
+
+                {/* Volume */}
+                <button
+                  onClick={toggleMute}
+                  className="text-white hover:text-primary-gold transition-colors p-1"
+                  aria-label={isMuted ? "Activar sonido" : "Silenciar"}
+                >
+                  {isMuted ? (
+                    <VolumeX className="w-6 h-6" />
+                  ) : (
+                    <Volume2 className="w-6 h-6" />
+                  )}
+                </button>
+
+                {/* Time */}
+                <div className="text-white text-sm font-gt-america">
+                  {formatTime(currentTime)} / {formatTime(duration)}
+                </div>
+              </div>
+
+              {/* Fullscreen */}
+              <button
+                onClick={toggleFullscreen}
+                className="text-white hover:text-primary-gold transition-colors p-1"
+                aria-label="Pantalla completa"
+              >
+                <Maximize className="w-6 h-6" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Título del video */}
-      <div className="absolute top-4 left-4 right-4">
-        <div className="bg-black/50 backdrop-blur-sm text-white p-3 rounded-lg">
-          <h4 className="font-gt-extended font-bold text-lg">
-            Avance de Obra - Palmera de los Remeros
-          </h4>
-          <p className="text-sm text-primary-cream">
-            Seguí el progreso de construcción en tiempo real
-          </p>
+      {showControls && (
+        <div className="absolute top-4 left-4 right-4">
+          <div className="bg-black/50 backdrop-blur-sm text-white p-3 rounded-lg">
+            <h4 className="font-gt-extended font-bold text-lg">
+              Avance de Obra - Palmera de los Remeros
+            </h4>
+            <p className="text-sm text-primary-cream">
+              Seguí el progreso de construcción en tiempo real
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 } 

@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import ParallaxClientWrapper from "@/components/ui/ParallaxClientWrapper";
 
 // GT America fonts
 const gtAmericaRegular = localFont({
@@ -140,8 +141,10 @@ export default function RootLayout({
       ${acuminVariableConcept.variable}
     `}>
       <body className={`${gtAmericaRegular.className} antialiased bg-primary-white text-primary-navy`}>
-        {children}
+        <ParallaxClientWrapper>
+          {children}
+        </ParallaxClientWrapper>
       </body>
     </html>
   );
-}   
+} 
