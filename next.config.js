@@ -20,8 +20,6 @@ const nextConfig = {
   generateEtags: true,
   // Configuración de entorno
   env: {
-    STRAPI_API_URL: process.env.STRAPI_API_URL || 'http://localhost:1337',
-    STRAPI_ADMIN_URL: process.env.STRAPI_ADMIN_URL || 'http://localhost:1337/admin',
     PUBLIC_URL: process.env.PUBLIC_URL || 'http://localhost:3000',
   },
   experimental: {
