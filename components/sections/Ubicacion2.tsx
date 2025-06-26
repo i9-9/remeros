@@ -615,17 +615,6 @@ export default function UbicacionSimple() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-primary-sage text-primary-cream flex flex-col box-border py-4 px-4">
-                  {/* Logo Remeros Mobile */}
-                  <div className="flex justify-center mb-4">
-                    <button
-                      onClick={() => setHoveredPoint('Palmera de los Remeros')}
-                      className="transition-transform duration-200 hover:scale-105 active:scale-95"
-                      title="Volver a Palmera de los Remeros"
-                    >
-                      <Logo type="remeros-footer" size="sm" className="text-primary-cream" />
-                    </button>
-                  </div>
-                  
                   <div>
                     <h3 className="font-montreal-bold text-lg mb-4 text-primary-cream">Gastronomía</h3>
                     <div className="space-y-1 text-xs font-montreal-light">

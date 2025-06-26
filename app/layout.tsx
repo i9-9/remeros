@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ParallaxClientWrapper from "@/components/ui/ParallaxClientWrapper";
+import WhatsAppButton from "@/components/ui/WhatsAppButton";
 
 // GT America fonts
 const gtAmericaRegular = localFont({
@@ -144,6 +145,7 @@ export default function RootLayout({
         <ParallaxClientWrapper>
           {children}
         </ParallaxClientWrapper>
+        <WhatsAppButton />
       </body>
     </html>
   );

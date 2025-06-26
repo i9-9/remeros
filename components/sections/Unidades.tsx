@@ -12,9 +12,7 @@ export default function Unidades() {
     '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 05_SUM_ER01 (1).jpg',
     '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 04_RETAIL_FI (2).jpg',
     '/images/gallery/ARV_GRUPO PORTLAND_REMEROS TOWER_VIEW 03_ZOOM BALCON_FI (1).jpg',
-    '/images/gallery/Untitled.jpg',
-    '/images/gallery/Untitled-1.jpg',
-    '/images/gallery/Untitled-2.jpg',
+    '/images/gallery/Untitled.jpg'
   ]
 
   const { ref, inView } = useInView({

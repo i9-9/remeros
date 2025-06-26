@@ -34,7 +34,7 @@ export default function Amenities() {
                 <div className="col-6">
                   <button 
                     onClick={handleDownload}
-                    className="flex items-center bg-white/90 backdrop-blur-sm hover:bg-white transition-colors px-8 py-4 text-primary-dark font-montreal-medium text-lg rounded-full"
+                    className="flex items-center bg-white/90 backdrop-blur-sm hover:bg-white transition-colors px-8 py-4 text-primary-dark font-montreal-medium text-lg rounded-full whitespace-nowrap"
                   >
                     DESCARGAR BROCHURE
                     <svg className="ml-3 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

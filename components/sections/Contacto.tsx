@@ -100,7 +100,7 @@ export default function Contacto() {
                 <motion.input
                   type="text"
                     {...register('nombre')}
-                  placeholder="Nombre"
+                  placeholder="Nombre *"
                   className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
                   variants={inputVariants}
                   initial="hidden"
@@ -124,7 +124,7 @@ export default function Contacto() {
                 <motion.input
                   type="text"
                     {...register('apellido')}
-                  placeholder="Apellido"
+                  placeholder="Apellido *"
                   className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
                   variants={inputVariants}
                   initial="hidden"
@@ -172,7 +172,7 @@ export default function Contacto() {
                 <motion.input
                   type="tel"
                     {...register('telefono')}
-                  placeholder="Teléfono"
+                  placeholder="Teléfono *"
                   className="w-full px-6 py-4 bg-white/90 text-primary-dark placeholder-gray-500 font-montreal-medium text-lg focus:outline-none focus:bg-white transition-colors"
                   variants={inputVariants}
                   initial="hidden"
@@ -216,12 +216,23 @@ export default function Contacto() {
                   )}
                 </div>
 
+                {/* Leyenda de campos obligatorios */}
+                <motion.div 
+                  className="sm:col-span-2 mt-2 text-white/80 text-sm font-montreal-medium"
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  custom={5}
+                >
+                  * Campos obligatorios
+                </motion.div>
+
                 <motion.div
                   className="flex flex-col sm:flex-row sm:justify-end sm:col-span-2 gap-4 mt-8"
                   variants={inputVariants}
                   initial="hidden"
                   animate={isInView ? "visible" : "hidden"}
-                  custom={5}
+                  custom={6}
                 >
                   <button
                     type="submit"
