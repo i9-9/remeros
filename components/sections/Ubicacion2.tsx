@@ -487,7 +487,7 @@ export default function UbicacionSimple() {
   
   // Obtener API key de variables de entorno con fallback
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyA4wH8mkgtrU90kRb3PUT74sAxoOFdBCnc";
-  
+
   const handleMarkerHover = (pointName: string | null) => {
     setMapHoveredPoint(pointName);
   };
@@ -589,7 +589,7 @@ export default function UbicacionSimple() {
                 </div>
               </div>
               <div className="h-full">
-                <div className="relative w-[600px] h-full overflow-hidden border border-primary-dark">
+                <div className="relative w-[900px] h-full overflow-hidden border border-primary-dark">
                   <SimpleGoogleMapComponent 
                     apiKey={GOOGLE_MAPS_API_KEY} 
                     hoveredPoint={activeHoveredPoint} 
