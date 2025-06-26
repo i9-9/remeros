@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
   trailingSlash: true,
   // Configuración condicional basada en el entorno
   ...(process.env.NODE_ENV === 'production' ? {
@@ -13,7 +12,7 @@ const nextConfig = {
     loader: 'custom',
     loaderFile: './lib/contentful-image-loader.ts',
   },
-  // Optimizaciones para exportación estática
+  // Optimizaciones para Vercel
   optimizeFonts: true,
   compress: true,
   poweredByHeader: false,

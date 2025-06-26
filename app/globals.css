@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ensure CSS variables are available */
+:root {
+  --font-gt-america: 'GT America', system-ui, sans-serif;
+  --font-gt-extended-thin: 'GT America Extended Thin', system-ui, sans-serif;
+  --font-gt-extended-medium: 'GT America Extended Medium', system-ui, sans-serif;
+  --font-gt-extended-bold: 'GT America Extended Bold', system-ui, sans-serif;
+  --font-gt-expanded-bold: 'GT America Expanded Bold', system-ui, sans-serif;
+  --font-gt-expanded-regular: 'GT America Expanded Regular', system-ui, sans-serif;
+  --font-gt-light: 'GT America Light', system-ui, sans-serif;
+  --font-gt-medium: 'GT America Medium', system-ui, sans-serif;
+  --font-pp-neue-bold: 'PP Neue Montreal Bold', system-ui, sans-serif;
+  --font-pp-neue-book: 'PP Neue Montreal Book', system-ui, sans-serif;
+  --font-pp-neue-medium: 'PP Neue Montreal Medium', system-ui, sans-serif;
+  --font-acumin-variable: 'Acumin Variable Concept', system-ui, sans-serif;
+}
+
 /* 12 Column Grid System with 30px margins */
 .container-grid {
   max-width: 100%;
@@ -53,7 +69,7 @@
 }
 
 .font-gt-extended {
-  font-family: var(--font-gt-extended);
+  font-family: var(--font-gt-extended-medium);
 }
 
 .font-gt-expanded-regular {
@@ -62,22 +78,22 @@
 }
 
 .font-montreal-light {
-  font-family: var(--font-pp-neue);
-  font-weight: 300;
+  font-family: var(--font-pp-neue-book);
+  font-weight: 400;
 }
 
 .font-montreal-regular {
-  font-family: var(--font-pp-neue);
+  font-family: var(--font-pp-neue-book);
   font-weight: 400;
 }
 
 .font-montreal-medium {
-  font-family: var(--font-pp-neue);
+  font-family: var(--font-pp-neue-medium);
   font-weight: 500;
 }
 
 .font-montreal-bold {
-  font-family: var(--font-pp-neue);
+  font-family: var(--font-pp-neue-bold);
   font-weight: 700;
 }
 
