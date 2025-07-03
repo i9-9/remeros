@@ -44,6 +44,7 @@ const config: Config = {
         'fade-in': 'fadeIn 0.6s ease-in-out',
         'slide-up': 'slideUp 0.8s ease-out',
         'scale-in': 'scaleIn 0.5s ease-out',
+        'pulse-grow': 'pulseGrow 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -57,6 +58,16 @@ const config: Config = {
         scaleIn: {
           '0%': { transform: 'scale(0.9)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        pulseGrow: {
+          '0%, 100%': { 
+            transform: 'scale(1)', 
+            opacity: '0.9' 
+          },
+          '50%': { 
+            transform: 'scale(1.05)', 
+            opacity: '1' 
+          },
         },
       }
     },

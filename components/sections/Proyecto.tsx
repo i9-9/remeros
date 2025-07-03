@@ -16,7 +16,7 @@ export default function Proyecto() {
   ];
 
   return (
-    <section id="proyecto" className="bg-primary-navy text-white py-20 w-full" ref={sectionRef}>
+    <section id="proyecto" className="bg-primary-navy text-white min-h-[200vh] w-full flex flex-col justify-center" ref={sectionRef}>
       <div className="layout-margin">
         <div className="container-grid">
           <div className="col-12 text-center mb-16 flex flex-wrap justify-center gap-x-4">
@@ -62,7 +62,7 @@ export default function Proyecto() {
           </div>
           {/* Project Image */}
           <div className="col-12 mb-16">
-            <div className="relative max-w-4xl mx-auto -mt-24 md:-mt-36 z-0">
+            <div className="relative max-w-3xl mx-auto -mt-24 md:-mt-36 z-0">
               <img
                 src={getAssetPath("/images/proyecto2.png")}
                 alt="Palmera de los Remeros - Vista aérea del proyecto"
@@ -127,13 +127,13 @@ export default function Proyecto() {
         {amenityLines.map((line, index) => (
           <div key={index} className="marquee-container py-4">
             <div className={index % 2 === 0 ? 'marquee-content' : 'marquee-content-reverse'}>
-              <span className="font-gt-extended-thin text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl whitespace-nowrap">
+              <span className="font-gt-extended-thin text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-6xl whitespace-nowrap">
                 {line}
               </span>
-              <span className="font-gt-extended-thin text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl whitespace-nowrap">
+              <span className="font-gt-extended-thin text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-6xl whitespace-nowrap">
                 {line}
               </span>
-              <span className="font-gt-extended-thin text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl whitespace-nowrap">
+              <span className="font-gt-extended-thin text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-6xl whitespace-nowrap">
                 {line}
               </span>
             </div>
