@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Static export always enabled
-  output: 'export',
+  // Only use static export when explicitly requested
+  ...(process.env.EXPORT_MODE === 'static' && {
+    output: 'export',
+  }),
+  
   trailingSlash: true,
   
   // Conditional basePath and assetPrefix
