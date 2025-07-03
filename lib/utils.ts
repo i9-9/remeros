@@ -26,7 +26,8 @@ export function getUTMSource(): string {
 
 // Function to handle public asset paths with basePath
 export function getAssetPath(path: string): string {
-  // In development, no basePath. In production, use /remeros basePath
-  const basePath = process.env.NODE_ENV === 'production' ? '/remeros' : '';
+  // Only use /remeros basePath for static exports, not for Vercel deploys
+  // This matches the logic in next.config.js
+  const basePath = process.env.PUBLIC_URL || '';
   return `${basePath}${path}`;
 } 

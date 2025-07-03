@@ -17,10 +17,14 @@ const nextConfig = {
   }),
   
   images: {
-    unoptimized: true,
-    domains: ['images.ctfassets.net', 'localhost'],
-    loader: 'custom',
-    loaderFile: './lib/contentful-image-loader.ts',
+    // For static export, images must be unoptimized
+    unoptimized: process.env.EXPORT_MODE === 'static',
+    domains: ['images.ctfassets.net'],
+    // Only use custom loader for Contentful images when not in static export mode
+    ...(process.env.EXPORT_MODE !== 'static' && {
+      loader: 'custom',
+      loaderFile: './lib/contentful-image-loader.ts',
+    }),
   },
   compress: true,
   poweredByHeader: false,
