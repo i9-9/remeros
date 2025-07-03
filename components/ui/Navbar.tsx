@@ -19,7 +19,17 @@ export default function Navbar() {
     <nav className="relative z-10 py-5 layout-margin">
       <div className="container-grid">
         <div className="col-4 flex items-center">
-          <Logo type="remeros" size="lg" className="text-white" />
+          <motion.div
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              delay: 0.1, 
+              duration: 0.6, 
+              ease: 'easeOut'
+            }}
+          >
+            <Logo variant="remeros" width={200} height={98} className="h-16 w-auto text-white" />
+          </motion.div>
         </div>
         
         {/* Desktop Navigation */}
@@ -29,7 +39,7 @@ export default function Navbar() {
               key={item.name}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + idx * 0.12, duration: 0.5, ease: 'easeOut' }}
+              transition={{ delay: 0.4 + idx * 0.12, duration: 0.5, ease: 'easeOut' }}
             >
               <Link
                 href={item.href}
@@ -43,16 +53,19 @@ export default function Navbar() {
 
         {/* Mobile menu button */}
         <div className="col-8 flex lg:hidden justify-end items-center">
-          <button
+          <motion.button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-primary-navy"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.5, ease: 'easeOut' }}
           >
             <span className="sr-only">Abrir menú principal</span>
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-          </button>
+          </motion.button>
         </div>
       </div>
 

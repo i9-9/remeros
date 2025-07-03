@@ -1,27 +1,24 @@
-import React from 'react';
 import Image from 'next/image';
+import { getAssetPath } from '@/lib/utils';
 
 interface PortlandLogoProps {
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
+  width?: number;
+  height?: number;
 }
 
-const sizeMap = {
-  sm: 32,
-  md: 60,
-  lg: 73,
-};
-
-export default function PortlandLogo({ className = '', size = 'md' }: PortlandLogoProps) {
-  const height = sizeMap[size] || 60;
-  
+export default function PortlandLogo({ 
+  className = "", 
+  width = 273,
+  height = 73 
+}: PortlandLogoProps) {
   return (
     <Image
-      src="/logo/logo_portland.svg"
+      src={getAssetPath("/logo/logo_portland.svg")}
       alt="Grupo Portland"
-      width={height * 3.74}
+      width={width}
       height={height}
-      className={className}
+      className={`text-primary-beige ${className}`}
     />
   );
 } 

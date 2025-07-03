@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { getAssetPath } from '@/lib/utils';
 
 export default function Amenities() {
   const handleDownload = () => {
@@ -20,7 +21,7 @@ export default function Amenities() {
         <div>
           <div className="col-12 relative h-[50vh] min-h-[300px]">
             <Image
-              src="/images/brochure.jpg"
+              src={getAssetPath("/images/brochure.jpg")}
               alt="Palmera de los Remeros - Vista peatonal"
               fill
               className="object-cover"

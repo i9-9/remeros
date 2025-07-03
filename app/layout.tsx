@@ -111,10 +111,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
   twitter: {
     card: 'summary',
     title: 'Palmera de los Remeros - Departamentos en Tigre',

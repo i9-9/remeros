@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import AnimatedTitle from '@/components/ui/AnimatedTitle'
 import Logo from '@/components/ui/Logo'
+import AnimatedDivider from '@/components/ui/AnimatedDivider'
 
 // Variable global para evitar múltiples cargas
 let isGoogleMapsLoading = false;
@@ -499,32 +500,41 @@ export default function UbicacionSimple() {
   const activeHoveredPoint = hoveredPoint || mapHoveredPoint;
   
   return (
-    <section id="ubicacion" className="bg-primary-cream overflow-hidden py-12">
+    <section id="ubicacion" className="bg-primary-cream overflow-hidden py-20">
       <div className="layout-margin">
         <div className="container-grid">
           {/* Header */}
           <div className="col-12 mb-8">
             <div className="w-full flex flex-col md:flex-row items-center justify-center md:gap-8 gap-4">
               <AnimatedTitle 
-                className="font-gt-extended font-bold text-6xl md:text-5xl text-primary-dark whitespace-nowrap"
+                className="font-gt-extended font-bold text-5xl md:text-6xl lg:text-7xl text-primary-dark whitespace-nowrap"
                 delay={0.2}
                 direction="up"
               >
                 UBICACIÓN
               </AnimatedTitle>
-              <div className="w-16 h-1 md:w-1 md:h-16 bg-primary-dark md:mx-6"></div>
-              <AnimatedTitle 
-                className="flex flex-col items-center md:items-start text-center md:text-left"
+              <AnimatedDivider
+                className="md:mx-6"
                 delay={0.4}
-                direction="up"
-              >
-                <h3 className="font-montreal-medium text-2xl text-primary-dark mb-2">
+                duration={0.8}
+                backgroundColor="bg-primary-dark"
+              />
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <AnimatedTitle 
+                  className="font-montreal-medium text-2xl text-primary-dark mb-2"
+                  delay={0.6}
+                  direction="up"
+                >
                   Camino de los Remeros<br className="md:hidden" /> y Ruta 27
-                </h3>
-                <p className="font-montreal-light text-md text-primary-dark">
+                </AnimatedTitle>
+                <AnimatedTitle 
+                  className="font-montreal-light text-md text-primary-dark"
+                  delay={0.8}
+                  direction="up"
+                >
                   Próximo a Remeros Plaza, a 5 minutos del Centro comercial Nordelta y del Acceso Tigre (Panamericana).
-                </p>
-              </AnimatedTitle>
+                </AnimatedTitle>
+              </div>
             </div>
           </div>
 
@@ -544,7 +554,7 @@ export default function UbicacionSimple() {
                         title="Volver a Palmera de los Remeros"
                         tabIndex={0}
                       >
-                        <Logo type="remeros-footer" size="md" className="text-primary-cream" />
+                        <Logo variant="remeros-footer" width={200} height={98} className="h-12 w-auto text-primary-cream" />
                       </button>
                     </div>
                     <div>

@@ -22,4 +22,11 @@ export function getUTMSource(): string {
 
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('utm_source') || 'Directo';
+}
+
+// Function to handle public asset paths with basePath
+export function getAssetPath(path: string): string {
+  // In development, no basePath. In production, use /remeros basePath
+  const basePath = process.env.NODE_ENV === 'production' ? '/remeros' : '';
+  return `${basePath}${path}`;
 } 

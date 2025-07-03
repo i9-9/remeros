@@ -1,33 +1,35 @@
-import Image from 'next/image'
+import React from 'react';
+import Image from 'next/image';
+import { getAssetPath } from '@/lib/utils';
 
 interface LogoProps {
+  variant?: 'remeros' | 'portland' | 'remeros-footer';
   className?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  type?: 'remeros' | 'portland' | 'remeros-footer';
+  width?: number;
+  height?: number;
 }
 
-export default function Logo({ className = '', size = 'md', type = 'remeros' }: LogoProps) {
-  const sizeClasses = {
-    sm: 'h-8',
-    md: 'h-12',
-    lg: 'h-16',
-    xl: 'h-32',
-  };
+const logoMap = {
+  portland: getAssetPath('/logo/logo_portland.svg'),
+  remeros: getAssetPath('/logo/logo_remeros.svg'),
+  'remeros-footer': getAssetPath('/logo/logo_remeros_footer.svg')
+};
 
-  const logoSrc = {
-    remeros: '/logo/logo_remeros.svg',
-    portland: '/logo/logo_portland.svg',
-    'remeros-footer': '/logo/logo_remeros_footer.svg'
-  };
-
+export default function Logo({ 
+  variant = 'remeros',
+  className = '',
+  width = 200,
+  height = 98 
+}: LogoProps) {
+  const src = logoMap[variant];
+  
   return (
     <Image
-      src={logoSrc[type]}
-      alt={type === 'portland' ? 'Grupo Portland' : 'Palmera de los Remeros'}
-      width={type === 'portland' ? 120 : 200}
-      height={type === 'portland' ? 60 : 98}
-      className={`${sizeClasses[size]} w-auto ${className}`}
-      priority={type === 'remeros'}
+      src={src}
+      alt={variant === 'portland' ? 'Grupo Portland' : 'Palmera de los Remeros'}
+      width={width}
+      height={height}
+      className={className}
     />
   );
 } 

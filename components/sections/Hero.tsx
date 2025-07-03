@@ -6,6 +6,7 @@ import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import { getAssetPath } from '@/lib/utils';
 
 export default function Hero() {
   const [isMobile, setIsMobile] = useState(false);
@@ -31,12 +32,12 @@ export default function Hero() {
         {/* Preload both images */}
         <link
           rel="preload"
-          href="/images/hero.jpg"
+          href={getAssetPath("/images/hero.jpg")}
           as="image"
         />
         <link
           rel="preload"
-          href="/images/hero_mobile.jpg"
+          href={getAssetPath("/images/hero_mobile.jpg")}
           as="image"
         />
       </Head>
@@ -44,7 +45,7 @@ export default function Hero() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src={isMobile ? "/images/hero_mobile.jpg" : "/images/hero.jpg"}
+            src={isMobile ? getAssetPath("/images/hero_mobile.jpg") : getAssetPath("/images/hero.jpg")}
             alt="Palmera de los Remeros - Vista aérea"
             fill
             className="object-cover"

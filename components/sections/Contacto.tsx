@@ -8,6 +8,7 @@ import { submitToGoogleSheets } from '@/lib/google-sheets';
 import { ContactFormData, contactFormSchema } from '@/types/forms';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import AnimatedDivider from '@/components/ui/AnimatedDivider';
 
 export default function Contacto() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -78,17 +79,26 @@ export default function Contacto() {
           <div className="col-12 mb-16">
             <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16 text-center md:text-left justify-center">
               <AnimatedTitle 
-                className="font-gt-extended font-medium text-6xl md:text-7xl text-white mb-0 whitespace-nowrap"
+                className="font-gt-extended font-medium text-5xl md:text-6xl lg:text-7xl text-white mb-0 whitespace-nowrap"
                 delay={0.2}
                 direction="up"
               >
                 CONTACTO
               </AnimatedTitle>
-              <div className="w-20 h-1 md:w-1 md:h-20 bg-white mx-0 md:mx-6"></div>
-              <p className="font-montreal-medium text-xl text-white max-w-2xl mb-0">
-                Te invitamos a dejarnos tus datos para recibir más información sobre<br />
-                Palmera de los Remeros
-              </p>
+              <AnimatedDivider
+                className="mx-0 md:mx-6"
+                delay={0.4}
+                duration={0.8}
+                backgroundColor="bg-white"
+                size="large"
+              />
+              <AnimatedTitle 
+                className="font-montreal-medium text-xl text-white max-w-2xl mb-0"
+                delay={0.6}
+                direction="up"
+              >
+                Te invitamos a dejarnos tus datos para recibir más información sobre<br />Palmera de los Remeros
+              </AnimatedTitle>
             </div>
           </div>
 

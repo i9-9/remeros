@@ -3,6 +3,8 @@
 import { useRef } from 'react';
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
+import AnimatedTextReveal from '@/components/ui/AnimatedTextReveal';
+import { getAssetPath } from '@/lib/utils';
 
 export default function Proyecto() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -18,22 +20,51 @@ export default function Proyecto() {
       <div className="layout-margin">
         <div className="container-grid">
           <div className="col-12 text-center mb-16 flex flex-wrap justify-center gap-x-4">
-            {["CONOCÉ", "EL", "PROYECTO"].map((word, idx) => (
-              <AnimatedTitle
-                key={word}
-                className="font-gt-extended-medium text-6xl md:text-6xl lg:text-[9.5rem] md:leading-[1] text-center mb-0 z-10 relative inline-block"
-                delay={0.2 + idx * 0.18}
-                direction="up"
-              >
-                <span className="block">{word}</span>
-              </AnimatedTitle>
-            ))}
+            <AnimatedTitle 
+              className="font-gt-extended-medium text-6xl md:text-6xl lg:text-[9.5rem] md:leading-[1] text-center mb-0 z-10 relative inline-block"
+              delay={0.2}
+              direction="up"
+            >
+              <span className="block">
+                <AnimatedTextReveal 
+                  text="CONOCÉ" 
+                  delay={0.2}
+                  duration={0.08}
+                />
+              </span>
+            </AnimatedTitle>
+            <AnimatedTitle 
+              className="font-gt-extended-medium text-6xl md:text-6xl lg:text-[9.5rem] md:leading-[1] text-center mb-0 z-10 relative inline-block"
+              delay={0.4}
+              direction="up"
+            >
+              <span className="block">
+                <AnimatedTextReveal 
+                  text="EL" 
+                  delay={1.0}
+                  duration={0.12}
+                />
+              </span>
+            </AnimatedTitle>
+            <AnimatedTitle 
+              className="font-gt-extended-medium text-6xl md:text-6xl lg:text-[9.5rem] md:leading-[1] text-center mb-0 z-10 relative inline-block"
+              delay={0.6}
+              direction="up"
+            >
+              <span className="block">
+                <AnimatedTextReveal 
+                  text="PROYECTO" 
+                  delay={1.5}
+                  duration={0.08}
+                />
+              </span>
+            </AnimatedTitle>
           </div>
           {/* Project Image */}
           <div className="col-12 mb-16">
             <div className="relative max-w-4xl mx-auto -mt-24 md:-mt-36 z-0">
               <img
-                src="/images/proyecto2.png"
+                src={getAssetPath("/images/proyecto2.png")}
                 alt="Palmera de los Remeros - Vista aérea del proyecto"
                 className="w-full h-auto rounded-lg"
               />

@@ -4,6 +4,9 @@ import React from 'react';
 import AnimatedTitle from '@/components/ui/AnimatedTitle';
 import { useInView } from 'react-intersection-observer';
 import { useParallax } from 'react-scroll-parallax';
+import { getAssetPath } from '@/lib/utils';
+import AnimatedTextReveal from '@/components/ui/AnimatedTextReveal';
+import AnimatedWordReveal from '@/components/ui/AnimatedWordReveal';
 
 export default function Entorno() {
   const { ref: inViewRef } = useInView({
@@ -26,7 +29,7 @@ export default function Entorno() {
         ref={parallax.ref}
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: 'url(/images/parallax.jpg)',
+          backgroundImage: `url(${getAssetPath('/images/parallax.jpg')})`,
           transform: 'scale(1.6)',
           top: '-30%',
           height: '160%'
@@ -48,13 +51,27 @@ export default function Entorno() {
             direction="up"
           >
             <h2 className="text-white font-gt-extended-medium text-3xl md:text-5xl leading-none">
-              UN ENTORNO<br />
-              <span className='font-gt-extended-bold'>INIGUALABLE</span>
+              <AnimatedTextReveal 
+                text="UN ENTORNO" 
+                delay={0.2}
+                duration={0.08}
+              /><br />
+              <span className='font-gt-extended-bold'>
+                <AnimatedTextReveal 
+                  text="INIGUALABLE" 
+                  delay={1.0}
+                  duration={0.12}
+                />
+              </span>
             </h2>
           </AnimatedTitle>
-          
+
           <p className="text-white text-left font-montreal-medium text-xl leading-[1.2rem] md:text-2xl max-w-xl lg:leading-[1.4rem]">
-            Un lugar que combina lo mejor de lo natural y lo urbano
+            <AnimatedWordReveal 
+              text="Un lugar que combina lo mejor de lo natural y lo urbano" 
+              delay={1.8}
+              duration={0.15}
+            />
           </p>
         </div>
       </div>
