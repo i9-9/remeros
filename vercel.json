@@ -1,15 +1,10 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": ".next",
+  "outputDirectory": "out",
   "framework": "nextjs",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
   "regions": ["iad1"],
-  "functions": {
-    "app/**/*.{js,ts,jsx,tsx}": {
-      "maxDuration": 30
-    }
-  },
   "headers": [
     {
       "source": "/fonts/(.*)",

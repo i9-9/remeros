@@ -1,12 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Only apply export settings in production
-  ...(process.env.NODE_ENV === 'production' && {
-    output: 'export',
+  // Static export always enabled
+  output: 'export',
+  trailingSlash: true,
+  
+  // Conditional basePath and assetPrefix
+  // Use EXPORT_MODE=static for static export with /remeros path
+  // Use VERCEL=1 (automatically set by Vercel) for Vercel deploys
+  // Development mode has no basePath
+  ...(process.env.EXPORT_MODE === 'static' && !process.env.VERCEL && {
     basePath: '/remeros',
     assetPrefix: '/remeros',
-    trailingSlash: true,
   }),
+  
   images: {
     unoptimized: true,
     domains: ['images.ctfassets.net', 'localhost'],
@@ -17,7 +23,7 @@ const nextConfig = {
   poweredByHeader: false,
   generateEtags: true,
   env: {
-    PUBLIC_URL: process.env.NODE_ENV === 'production' ? '/remeros' : '',
+    PUBLIC_URL: process.env.EXPORT_MODE === 'static' && !process.env.VERCEL ? '/remeros' : '',
   },
   experimental: {
     optimizePackageImports: ['lucide-react'],
